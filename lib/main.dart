@@ -30,11 +30,6 @@ class Login extends StatefulWidget {
 }
 
 class _HomeState extends State<Login> {
-  Future getData() async {
-    var firestore = FirebaseFirestore.instance;
-    QuerySnapshot qs = await firestore.collection("users").get();
-    return qs.docs;
-  }
   @override
   Widget build(BuildContext context) {
     return LoginPage();

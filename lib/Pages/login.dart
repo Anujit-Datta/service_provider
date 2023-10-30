@@ -3,17 +3,11 @@ import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  Future getData() async {
-    var firestore = FirebaseFirestore.instance;
-    QuerySnapshot qs = await firestore.collection("users").get();
-    return qs.docs;
-  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 child: Column(
                   children: [
-                    phone_field(),
+                    email_field(),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     Password_field(),
                     SizedBox(
@@ -58,17 +52,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // DocumentSnapshot docSnap = await doc_ref.get();
-  // var doc_id2 = docSnap.reference.documentID;
 
-  FutureBuilder phone_field() {
 
-    return FutureBuilder(
-      future: getData(),
-      builder: (_,snapshot){
-        var data=snapshot.data;
-        return data["name"];
-      },
+  TextField email_field() {
+    return TextField(
+      decoration: InputDecoration(
+        fillColor: Colors.lightBlueAccent.shade100,
+        filled: true,
+        hintText: " Email",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+      ),
     );
   }
 
@@ -78,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(
         fillColor: Colors.lightBlueAccent.shade100,
         filled: true,
-        hintText: "  Password",
+        hintText: " Password",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
@@ -122,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Dont have an account?",
+          "Don't have an account?",
           style: TextStyle(
             color: Color(0xff4c505b),
             fontSize: 14,

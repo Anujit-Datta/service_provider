@@ -1,12 +1,15 @@
   import 'package:flutter/material.dart';
-  import 'package:cloud_firestore/cloud_firestore.dart';
-  import 'package:service_provider/Pages/Register.dart';
-  import 'package:service_provider/Pages/login.dart';
+  import 'package:flutter_easyloading/flutter_easyloading.dart';
+  import 'package:service_provider/Pages/launcher.dart';
   import 'package:firebase_core/firebase_core.dart';
   import 'package:service_provider/routes.dart';
+  import 'firebase_options.dart';
 
-  void main() {
+  void main() async {
     WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     runApp(const MyApp());
   }
   class MyApp extends StatelessWidget {
@@ -18,20 +21,8 @@
         debugShowCheckedModeBanner: false,
         routes: appRoutes,
         title: 'Flutter Demo',
-        home: LoginPage(),
+        builder: EasyLoading.init(),
+        home: const launcherPage(),
       );
-    }
-  }
-
-  class Login extends StatefulWidget {
-    const Login({super.key});
-    @override
-    State<Login> createState() => _HomeState();
-  }
-
-  class _HomeState extends State<Login> {
-    @override
-    Widget build(BuildContext context) {
-      return LoginPage();
     }
   }

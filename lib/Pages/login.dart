@@ -1,5 +1,8 @@
-  import 'package:cloud_firestore/cloud_firestore.dart';
+  import 'package:firebase_auth/firebase_auth.dart';
   import 'package:flutter/material.dart';
+  import 'package:flutter_easyloading/flutter_easyloading.dart';
+  import 'package:service_provider/firebaseHelper.dart';
+import 'package:service_provider/routes.dart';
 
   class LoginPage extends StatefulWidget {
     const LoginPage({super.key});
@@ -8,6 +11,9 @@
   }
 
   class _LoginPageState extends State<LoginPage> {
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
+    String _errorMsg = '';
     @override
     Widget build(BuildContext context) {
       return Container(
@@ -20,7 +26,6 @@
           backgroundColor: Colors.transparent,
           body: Stack(
             children: [
-              //Welcome_text(),
               SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.only(
@@ -39,6 +44,12 @@
                       Login_text_and_Button(),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.14,
+                        child: Text(
+                          _errorMsg,
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
                       ),
                       Register_ask(),
                       forgot_password(),
@@ -53,9 +64,27 @@
     }
 
 
+    void validation() async {
+      EasyLoading.show(status: 'Logging in', dismissOnTap: false);
+      try{
+        final email=_emailController.text;
+        final password=_passwordController.text;
+        final status = await AuthServices.loginto(email, password);
+        if(status){
+          EasyLoading.dismiss();
+          Navigator.pushReplacementNamed(context, launcherRoute);
+        }
+      } on FirebaseAuthException catch(error){
+        EasyLoading.dismiss();
+        setState(() {
+          _errorMsg = error.message!;
+        });
+      }
+    }
 
     TextField email_field() {
       return TextField(
+        controller: _emailController,
         decoration: InputDecoration(
           fillColor: Colors.lightBlueAccent.shade100,
           filled: true,
@@ -69,6 +98,7 @@
 
     TextField Password_field() {
       return TextField(
+        controller: _passwordController,
         obscureText: true,
         decoration: InputDecoration(
           fillColor: Colors.lightBlueAccent.shade100,
@@ -101,7 +131,7 @@
               backgroundColor: Color(0xff4c505b),
               radius: 35,
               child: IconButton(
-                onPressed: () {},
+                onPressed: validation,
                 color: Colors.white,
                 icon: Icon(Icons.arrow_forward),
               ),
@@ -128,7 +158,7 @@
             width: 70,
             child: TextButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/register');
+                Navigator.pushReplacementNamed(context, registerRoute);
               },
               child: Text(
                 'Register',

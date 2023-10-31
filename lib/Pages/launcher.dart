@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider/firebaseHelper.dart';
+import 'package:service_provider/routes.dart';
 
 class launcherPage extends StatelessWidget {
   const launcherPage({super.key});
@@ -6,12 +8,11 @@ class launcherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration.zero, (){
-      Navigator.pushReplacementNamed(context, '/login');
-      // if(AuthServices.currUser != null){
-      //   Navigator.pushReplacementNamed(context, '/home');
-      // }else{
-      //   Navigator.pushReplacementNamed(context, '/login');
-      // }
+      if(AuthServices.currentUser != null){
+        Navigator.pushReplacementNamed(context, userHomePageRoute);
+      }else{
+        Navigator.pushReplacementNamed(context, loginRoute);
+      }
     });
     return const Scaffold(
       body: Center(

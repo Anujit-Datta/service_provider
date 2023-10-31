@@ -2,7 +2,7 @@
   import 'package:flutter/material.dart';
   import 'package:flutter_easyloading/flutter_easyloading.dart';
   import 'package:service_provider/firebaseHelper.dart';
-import 'package:service_provider/routes.dart';
+  import 'package:service_provider/routes.dart';
 
   class LoginPage extends StatefulWidget {
     const LoginPage({super.key});
@@ -73,6 +73,8 @@ import 'package:service_provider/routes.dart';
         if(status){
           EasyLoading.dismiss();
           Navigator.pushReplacementNamed(context, launcherRoute);
+        }else{
+          await AuthServices.logout();
         }
       } on FirebaseAuthException catch(error){
         EasyLoading.dismiss();

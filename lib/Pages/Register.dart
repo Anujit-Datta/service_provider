@@ -17,49 +17,56 @@
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
-          body: Stack(
-            children: [
-              createAccountText(),
-              SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.28),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 35, right: 35),
-                        child: Column(
-                          children: [
-                            nameField(),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            emailField(),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            passwordField(),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            signupButton(),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            signinAsk(context)
-                          ],
-                        ),
-                      )
-                    ],
+          body: Form(
+            child: Stack(
+              children: [
+                createAccountText(),
+                SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 35, right: 35),
+                          child: Column(
+                            children: [
+                              nameField(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              emailField(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              phoneField(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              addressField(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              passwordField(),
+                              SizedBox(
+                                height: 20
+                                ,
+                              ),
+                              signupButton(),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.01,
+                              ),
+                              signinAsk(context)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
@@ -81,7 +88,7 @@
               'Sign In',
               style: TextStyle(
                   decoration: TextDecoration.underline,
-                  color: Colors.white,
+                  color: Color(0xff4c505b),
                   fontSize: 20),
             ),
             style: ButtonStyle(),
@@ -113,19 +120,21 @@
       );
     }
 
-    TextField passwordField() {
-      return TextField(
+    TextFormField passwordField() {
+      return TextFormField(
         style: TextStyle(color: Colors.white),
         obscureText: true,
         decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.lightBlueAccent.shade100,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
               borderSide: BorderSide(
                 color: Colors.white,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
               borderSide: BorderSide(
                 color: Colors.black,
               ),
@@ -133,23 +142,25 @@
             hintText: "Password",
             hintStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
             )),
       );
     }
 
-    TextField emailField() {
-      return TextField(
+    TextFormField addressField() {
+      return TextFormField(
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.lightBlueAccent.shade100,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
               borderSide: BorderSide(
                 color: Colors.white,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
               borderSide: BorderSide(
                 color: Colors.black,
               ),
@@ -157,38 +168,92 @@
             hintText: "Email",
             hintStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
             )),
       );
     }
 
-    TextField nameField() {
-      return TextField(
+    TextFormField phoneField() {
+      return TextFormField(
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.lightBlueAccent.shade100,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
               borderSide: BorderSide(
                 color: Colors.white,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
               borderSide: BorderSide(
                 color: Colors.black,
+              ),
+            ),
+            hintText: "Phone",
+            hintStyle: TextStyle(color: Colors.white),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+            )),
+      );
+    }
+
+    TextFormField emailField() {
+      return TextFormField(
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.lightBlueAccent.shade100,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+              borderSide: BorderSide(
+                color: Colors.white,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+              borderSide: BorderSide(
+                color: Colors.black,
+              ),
+            ),
+            hintText: "Email",
+            hintStyle: TextStyle(color: Colors.white),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+            )),
+      );
+    }
+
+    TextFormField nameField() {
+      return TextFormField(
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          filled: true,
+            fillColor: Colors.transparent,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+              borderSide: BorderSide(
+                color: Colors.white,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+              borderSide: BorderSide(
+                color: Colors.blueGrey,
               ),
             ),
             hintText: "Name",
             hintStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(45),
             )),
       );
     }
 
     Container createAccountText() {
       return Container(
-        padding: EdgeInsets.only(left: 35, top: 30),
+        padding: EdgeInsets.only(left: 35,top: 35),
         child: Text(
           'Create\nAccount',
           style: TextStyle(color: Colors.white, fontSize: 45),

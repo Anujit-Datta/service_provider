@@ -63,6 +63,7 @@
       );
     }
 
+    static final _auth = FirebaseAuth.instance;
 
     void validation() async {
       EasyLoading.show(status: 'Logging in', dismissOnTap: false);
@@ -74,7 +75,7 @@
           EasyLoading.dismiss();
           Navigator.pushReplacementNamed(context, launcherRoute);
         }else{
-          await AuthServices.logout();
+          await _auth.signOut();
         }
       } on FirebaseAuthException catch(error){
         EasyLoading.dismiss();

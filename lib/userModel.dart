@@ -5,7 +5,7 @@
   const userImage = 'image';
 
   class userModel{
-    int phone;
+    String phone;
     String name;
     String email;
     String address;

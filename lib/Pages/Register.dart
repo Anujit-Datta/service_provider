@@ -21,6 +21,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
   final _passwordController = TextEditingController();
+  String errorCode= '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,23 +50,24 @@ class _RegisterPageState extends State<RegisterPage> {
                           children: [
                             nameField(),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.02,
+                              height: MediaQuery.of(context).size.height * 0.015,
                             ),
                             emailField(),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.02,
+                              height: MediaQuery.of(context).size.height * 0.015,
                             ),
                             phoneField(),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.02,
+                              height: MediaQuery.of(context).size.height * 0.015,
                             ),
                             addressField(),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.02,
+                              height: MediaQuery.of(context).size.height * 0.015,
                             ),
                             passwordField(),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.04,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              child: Text(errorCode,style: TextStyle(fontSize: 17,color: Colors.redAccent),),
                             ),
                             signupButton(),
                             signinAsk(context)
@@ -130,8 +133,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       address: _addressController.text,
                       image: '',
                   );
-                    await _auth.createUserWithEmailAndPassword(email: user.email, password: _passwordController.text);
-                    await _db.collection('Users').add(user.toMap()).whenComplete(() => Navigator.pushReplacementNamed(context, userHomePageRoute));
+                    await _auth
+                        .createUserWithEmailAndPassword(email: user.email, password: _passwordController.text);
+                    await _db
+                        .collection('Users')
+                        .doc(user.email)
+                        .set(user.toMap()).onError((errorcode, stackTrace) {setState(() {errorCode=errorcode.toString();});})
+                        .whenComplete(() => Navigator.pushReplacementNamed(context, userHomePageRoute));
 
                 }
               },
@@ -171,6 +179,8 @@ class _RegisterPageState extends State<RegisterPage> {
       validator: (value) {
         if(value == null || value.isEmpty) {
           return 'Provide a password';
+        }else if(value.length<6){
+          return 'Password should be at least 6 characters';
         }
         return null;
       },

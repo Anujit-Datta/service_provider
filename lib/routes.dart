@@ -1,3 +1,4 @@
+  import 'package:service_provider/Pages/forgotpassword.dart';
   import 'package:service_provider/Pages/launcher.dart';
   import 'package:service_provider/Pages/login.dart';
   import 'package:service_provider/Pages/Register.dart';
@@ -7,10 +8,12 @@
   const registerRoute = '/register';
   const launcherRoute = '/launcher';
   const userHomePageRoute = '/userHome';
+  const forgotPasswordRoute = '/forgotpass';
 
   var appRoutes={
     loginRoute: (context)=> const LoginPage(),
     registerRoute: (context)=> const RegisterPage(),
     launcherRoute: (context)=> const launcherPage(),
     userHomePageRoute: (context)=> const userHomePage(),
+    forgotPasswordRoute: (context)=> const forgotPassword(),
   };

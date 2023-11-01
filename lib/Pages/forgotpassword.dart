@@ -1,35 +1,36 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:service_provider/firebaseHelper.dart';
-import 'package:service_provider/routes.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+import '../routes.dart';
+
+class forgotPassword extends StatefulWidget {
+  const forgotPassword({super.key});
+
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<forgotPassword> createState() => _forgotPasswordState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _forgotPasswordState extends State<forgotPassword> {
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String _errorMsg = '';
+  String _resetMsg = '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-        image: AssetImage("assets/login.png"),
-        fit: BoxFit.cover,
-      )),
+            image: AssetImage("assets/login.png"),
+            fit: BoxFit.cover,
+          )),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Form(
           key: _formKey,
           child: Stack(
             children: [
-              LoginText(),
+              ForgotPasswordText(),
               SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.only(
@@ -42,22 +43,18 @@ class _LoginPageState extends State<LoginPage> {
                       email_field(),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03),
-                      Password_field(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                      Login_text_and_Button(),
+                      Reset_text_and_Button(),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.13,
                         child: Text(
-                          _errorMsg,
+                          _resetMsg,
                           style: TextStyle(
                             color: Colors.red,
                           ),
                         ),
                       ),
                       Register_ask(),
-                      forgot_password(),
+                      Login_ask(),
                     ],
                   ),
                 ),
@@ -75,33 +72,35 @@ class _LoginPageState extends State<LoginPage> {
     EasyLoading.show(status: 'Logging in', dismissOnTap: false);
     try {
       final email = _emailController.text;
-      final password = _passwordController.text;
-      final status = await AuthServices.loginto(email, password);
-      if (status) {
+      await _auth.sendPasswordResetEmail(email: email).onError((error, stackTrace) {
         EasyLoading.dismiss();
-        Navigator.pushReplacementNamed(context, launcherRoute);
-      } else {
-        await _auth.signOut();
-      }
+        setState(() {
+          _resetMsg = error.toString();
+        });
+      }).whenComplete(() {
+        EasyLoading.dismiss();
+        setState(() {
+          _resetMsg= 'Password Reset link sent to email\nNote: Check Spam folder also';
+        });
+      });
     } on FirebaseAuthException catch (error) {
       EasyLoading.dismiss();
       setState(() {
-        _errorMsg = error.message.toString();
+        _resetMsg = error.message.toString();
       });
     }
   }
 
-  Container LoginText() {
+  Container ForgotPasswordText() {
     return Container(
       padding: EdgeInsets.only(
-          left: 10, top: MediaQuery.of(context).size.height * 0.15),
+          left: 10, top: MediaQuery.of(context).size.height * 0.11),
       child: Text(
-        'Welcome',
-        style: TextStyle(color: Colors.white, fontSize: 60),
+        'Reset\nPassword',
+        style: TextStyle(color: Colors.white, fontSize: 50),
       ),
     );
   }
-
 
   TextFormField email_field() {
     return TextFormField(
@@ -121,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
           if (value == null || value.isEmpty) {
             return 'Provide an email address';
           } else if (!RegExp(
-                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
               .hasMatch(value)) {
             return 'Invalid email address';
           }
@@ -129,45 +128,22 @@ class _LoginPageState extends State<LoginPage> {
         });
   }
 
-  TextFormField Password_field() {
-    return TextFormField(
-      controller: _passwordController,
-      obscureText: true,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.key,color: Colors.blueGrey.shade600,),
-        labelText: 'Password',
-        fillColor: Colors.lightBlueAccent.shade100,
-        filled: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-      ),
-      validator: (value) {
-        if(value == null || value.isEmpty) {
-          return 'Provide a password';
-        }
-        return null;
-      },
-    );
-  }
-
-  Row Login_text_and_Button() {
+  Row Reset_text_and_Button() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
           child: Text(
-            "Sign In",
+            "Reset",
             style: TextStyle(
                 color: Color(0xff4c505b),
-                fontSize: 30,
+                fontSize: 35,
                 fontWeight: FontWeight.w700),
           ),
-          padding: EdgeInsets.only(left: 20),
+          padding: EdgeInsets.only(left: 20,bottom: 10),
         ),
         Container(
-          padding: EdgeInsets.only(right: 15),
+          padding: EdgeInsets.only(right: 15,bottom: 15),
           child: CircleAvatar(
             backgroundColor: Color(0xff4c505b),
             radius: 35,
@@ -183,20 +159,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Row Register_ask() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Don't have an account?",
-          style: TextStyle(
-            color: Color(0xff4c505b),
-            fontSize: 14,
-          ),
-        ),
-        SizedBox(
+  SizedBox Register_ask() {
+    return SizedBox(
           height: 40,
-          width: 70,
+          width: 100,
           child: TextButton(
             onPressed: () {
               Navigator.pushReplacementNamed(context, registerRoute);
@@ -204,26 +170,25 @@ class _LoginPageState extends State<LoginPage> {
             child: Text(
               'Sign up',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 18,
                 color: Color(0xff4c505b),
                 decoration: TextDecoration.underline,
               ),
             ),
           ),
-        ),
-      ],
-    );
+        );
   }
 
-  SizedBox forgot_password() {
+  SizedBox Login_ask() {
     return SizedBox(
       height: 40,
+      width: 100,
       child: TextButton(
-        onPressed: () {Navigator.pushReplacementNamed(context, forgotPasswordRoute);},
+        onPressed: () {Navigator.pushReplacementNamed(context, loginRoute);},
         child: Text(
-          "Forgot Password?",
+          "Sign in",
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 18,
             color: Color(0xff4c505b),
             decoration: TextDecoration.underline,
           ),
@@ -231,4 +196,5 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
 }

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:service_provider/routes.dart';
 import 'package:service_provider/userModel.dart';
-import 'package:service_provider/firebaseHelper.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -140,7 +139,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         .doc(user.email)
                         .set(user.toMap()).onError((errorcode, stackTrace) {setState(() {errorCode=errorcode.toString();});})
                         .whenComplete(() => Navigator.pushReplacementNamed(context, userHomePageRoute));
-
                 }
               },
               icon: Icon(

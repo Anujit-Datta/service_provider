@@ -2,36 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:service_provider/routes.dart';
-import '';
+import 'package:service_provider/serviceModel.dart';
+int currService=-1;
 
 class userHomePage extends StatefulWidget {
   const userHomePage({super.key});
-
   @override
   State<userHomePage> createState() => _userHomePageState();
 }
 
 class _userHomePageState extends State<userHomePage> {
-  static final electrician = 'Electrician';
-  static final plumber = 'Plumber';
-  static final cleaner = 'Cleaner';
-  static final painter = 'Painter';
-  static final isp = 'ISP';
-  List services = [electrician, plumber, cleaner, painter, isp];
-  List servicesImage = [
-    'assets/electrician.png',
-    'assets/plumber.png',
-    'assets/cleaner.png',
-    'assets/painter.png',
-    'assets/ISP.png'
-  ];
-  int selectedService = -1;
   bool proceed = false;
 
   @override
   Widget build(BuildContext context) {
     final _db = FirebaseFirestore.instance;
+    final _auth= FirebaseAuth.instance;
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
@@ -95,24 +83,32 @@ class _userHomePageState extends State<userHomePage> {
               ),
             ]),
       ),
+
       drawer: NavigationDrawer(
+        backgroundColor: Colors.grey.shade200,
         children: [
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Colors.lightBlueAccent,
+              color: Colors.lightBlueAccent.shade400,
             ),
             padding:
-                EdgeInsets.only(top: 24 + MediaQuery.of(context).padding.top),
+                EdgeInsets.only(top:  MediaQuery.of(context).padding.top),
             height: MediaQuery.of(context).size.height * 0.30,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  radius: 50,
+                  radius: 70,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: AssetImage('assets/profileavater.png'),
+                  backgroundImage: NetworkImage('https://img.icons8.com/ios-filled/100/user-male-circle.png'),
                 ),
-                Text('Name'),
+                Text(
+                    'Name',
+                  style: TextStyle(
+                    fontSize: 25,
+                  ),
+                ),
               ],
             ),
           ),
@@ -191,19 +187,30 @@ class _userHomePageState extends State<userHomePage> {
               Navigator.pushReplacementNamed(context, userHomePageRoute);
             },
           ),
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.08,
+                top: MediaQuery.of(context).size.height * 0.005,
+                bottom: MediaQuery.of(context).size.height * 0.005),
+            minLeadingWidth: 5,
+            leading: Icon(Icons.logout_outlined),
+            title: Text(
+              'Sign out',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              _auth.signOut();
+              Navigator.pushReplacementNamed(context, launcherRoute);
+            },
+          ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.1,
           ),
-          ListTile(
-            contentPadding:
-                EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.12),
-            title: Text('Apply as Provider',style: TextStyle(fontSize: 25,color: Colors.redAccent),),
-            onTap: (){},
-          )
         ],
       ),
       floatingActionButton: proceedButton(),
-      bottomNavigationBar: BottomNavigationBar(items: [
+      bottomNavigationBar: BottomNavigationBar(
+          items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
@@ -211,6 +218,10 @@ class _userHomePageState extends State<userHomePage> {
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.checklist_rtl_sharp),
+          label: 'History',
         )
       ]),
     );
@@ -224,7 +235,10 @@ class _userHomePageState extends State<userHomePage> {
         child: FittedBox(
           child: FloatingActionButton(
             splashColor: Colors.blueGrey,
-            onPressed: () {},
+            onPressed: () {
+              serviceName=services[currService];
+              Navigator.pushNamed(context, servicesRoute);
+            },
             child: Icon(Icons.arrow_forward_ios),
           ),
         ),
@@ -237,11 +251,11 @@ class _userHomePageState extends State<userHomePage> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (selectedService == index) {
-            selectedService = -1;
+          if (currService == index) {
+            currService = -1;
             proceed = false;
           } else {
-            selectedService = index;
+            currService=index;
             proceed = true;
           }
         });
@@ -249,16 +263,16 @@ class _userHomePageState extends State<userHomePage> {
       child: Container(
         padding: EdgeInsets.all(10.0),
         decoration: BoxDecoration(
-          color: selectedService == index
+          color: currService == index
               ? Colors.blueGrey
               : Colors.lightBlueAccent.shade100,
           border: Border.all(
-            color: selectedService == index
+            color: currService == index
                 ? Colors.blueGrey
                 : Colors.blueGrey.withOpacity(0),
             width: 2.0,
           ),
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(30.0),
         ),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

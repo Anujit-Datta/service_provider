@@ -75,7 +75,6 @@ class _userHomePageState extends State<userHomePage> {
                       crossAxisSpacing: 30.0,
                       mainAxisSpacing: 30.0,
                     ),
-                    physics: NeverScrollableScrollPhysics(),
                     itemCount: services.length,
                     itemBuilder: (BuildContext context, int index) {
                       return serviceContainer(services[index], index);

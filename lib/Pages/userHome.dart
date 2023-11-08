@@ -13,11 +13,12 @@ class userHomePage extends StatefulWidget {
 
 class _userHomePageState extends State<userHomePage> {
   bool proceed = false;
-
   @override
   Widget build(BuildContext context) {
+
     final _db = FirebaseFirestore.instance;
     final _auth= FirebaseAuth.instance;
+
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
@@ -60,7 +61,7 @@ class _userHomePageState extends State<userHomePage> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(30.0),
+        padding: EdgeInsets.only(left: 20,right: 20),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -69,11 +70,18 @@ class _userHomePageState extends State<userHomePage> {
               ),
               Expanded(
                 child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.0,
-                      crossAxisSpacing: 30.0,
-                      mainAxisSpacing: 30.0,
+                    gridDelegate: MediaQuery.of(context).orientation==Orientation.portrait
+                    ? SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.41,
+                      childAspectRatio: 1,
+                      crossAxisSpacing: 20.0,
+                      mainAxisSpacing: 20.0,
+                    )
+                    : SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.25,
+                      childAspectRatio: 1,
+                      crossAxisSpacing: 20.0,
+                      mainAxisSpacing: 20.0,
                     ),
                     itemCount: services.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -89,13 +97,13 @@ class _userHomePageState extends State<userHomePage> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Colors.lightBlueAccent.shade400,
+              color: Colors.lightBlueAccent.shade200,
             ),
             padding:
                 EdgeInsets.only(top:  MediaQuery.of(context).padding.top),
-            height: MediaQuery.of(context).size.height * 0.30,
+            height: MediaQuery.of(context).orientation==Orientation.portrait?MediaQuery.of(context).size.height * 0.30:MediaQuery.of(context).size.width * 0.30,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
                   radius: 70,
@@ -260,7 +268,7 @@ class _userHomePageState extends State<userHomePage> {
         });
       },
       child: Container(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(1.0),
         decoration: BoxDecoration(
           color: currService == index
               ? Colors.blueGrey
@@ -278,11 +286,11 @@ class _userHomePageState extends State<userHomePage> {
             children: <Widget>[
               Image.asset(servicesImage[index]),
               SizedBox(
-                height: 20,
+                height: MediaQuery.of(context).size.height * 0.015,
               ),
               Text(
                 name,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 25),
               )
             ]),
       ),

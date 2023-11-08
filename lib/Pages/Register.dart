@@ -15,10 +15,15 @@ class _RegisterPageState extends State<RegisterPage> {
   final _db= FirebaseFirestore.instance;
   final _auth= FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+  FocusNode one=FocusNode();
   final _nameController = TextEditingController();
+  FocusNode two=FocusNode();
   final _emailController = TextEditingController();
+  FocusNode three=FocusNode();
   final _phoneController = TextEditingController();
+  FocusNode four=FocusNode();
   final _addressController = TextEditingController();
+  FocusNode five=FocusNode();
   final _passwordController = TextEditingController();
   String errorCode= '';
 
@@ -27,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage('assets/register.png'), fit: BoxFit.cover),
+            image: AssetImage('assets/register.png'), fit: BoxFit.fill),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -154,6 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
       style: TextStyle(color: Colors.white),
       obscureText: true,
       controller: _passwordController,
+      focusNode: five,
       decoration: InputDecoration(
           filled: true,
           fillColor: Colors.lightBlueAccent.shade100,
@@ -178,10 +184,11 @@ class _RegisterPageState extends State<RegisterPage> {
         if(value == null || value.isEmpty) {
           return 'Provide a password';
         }else if(value.length<6){
-          return 'Password should be at least 6 characters';
+          return 'Minimum 6 characters';
         }
         return null;
       },
+      onFieldSubmitted: (value){_formKey.currentState!.validate();_formKey.currentState!.validate();},
     );
   }
 
@@ -189,6 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return TextFormField(
       style: TextStyle(color: Colors.white),
       controller: _addressController,
+      focusNode: four,
       keyboardType: TextInputType.streetAddress,
       decoration: InputDecoration(
           filled: true,
@@ -216,6 +224,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
         return null;
       },
+      onFieldSubmitted: (value){FocusScope.of(context).requestFocus(five);},
     );
   }
 
@@ -223,6 +232,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return TextFormField(
       style: TextStyle(color: Colors.white),
       controller: _phoneController,
+      focusNode: three,
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
           filled: true,
@@ -252,12 +262,14 @@ class _RegisterPageState extends State<RegisterPage> {
         }
         return null;
       },
+      onFieldSubmitted: (value){FocusScope.of(context).requestFocus(four);},
     );
   }
 
   TextFormField emailField() {
     return TextFormField(
       controller: _emailController,
+      focusNode: two,
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
@@ -288,6 +300,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
         return null;
       },
+      onFieldSubmitted: (value){FocusScope.of(context).requestFocus(three);},
     );
   }
 
@@ -295,6 +308,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return TextFormField(
       style: TextStyle(color: Colors.white),
       controller: _nameController,
+      focusNode: one,
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
           filled: true,
@@ -322,6 +336,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
         return null;
       },
+      onFieldSubmitted: (value){FocusScope.of(context).requestFocus(two);},
     );
   }
 

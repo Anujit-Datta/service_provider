@@ -1,4 +1,5 @@
   import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
   import 'package:flutter_easyloading/flutter_easyloading.dart';
   import 'package:service_provider/Pages/launcher.dart';
   import 'package:firebase_core/firebase_core.dart';
@@ -7,6 +8,9 @@
 
   void main() async {
     WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.immersiveSticky,
+    );
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );

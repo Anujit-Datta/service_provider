@@ -11,8 +11,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  FocusNode one=FocusNode();
   final _emailController = TextEditingController();
+  FocusNode two=FocusNode();
   final _passwordController = TextEditingController();
+  FocusNode three=FocusNode();
   final _formKey = GlobalKey<FormState>();
   String _errorMsg = '';
   @override
@@ -106,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField email_field() {
     return TextFormField(
         controller: _emailController,
+        focusNode: one,
         keyboardType: TextInputType.emailAddress,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
@@ -126,12 +130,15 @@ class _LoginPageState extends State<LoginPage> {
             return 'Invalid email address';
           }
           return null;
-        });
+        },
+        onFieldSubmitted: (value){FocusScope.of(context).requestFocus(two);},
+        );
   }
 
   TextFormField Password_field() {
     return TextFormField(
       controller: _passwordController,
+      focusNode: two,
       obscureText: true,
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
@@ -146,9 +153,12 @@ class _LoginPageState extends State<LoginPage> {
       validator: (value) {
         if(value == null || value.isEmpty) {
           return 'Provide a password';
+        }else if(value.length<6){
+          return 'Minimum 6 characters';
         }
         return null;
       },
+      onFieldSubmitted: (value){_formKey.currentState!.validate()?validation():FocusScope.of(context).requestFocus(three);},
     );
   }
 
@@ -171,10 +181,13 @@ class _LoginPageState extends State<LoginPage> {
           child: CircleAvatar(
             backgroundColor: Color(0xff4c505b),
             radius: 35,
-            child: IconButton(
-              onPressed: validation,
-              color: Colors.white,
-              icon: Icon(Icons.arrow_forward),
+            child: GestureDetector(
+              child: IconButton(
+                focusNode: three,
+                onPressed: validation,
+                color: Colors.white,
+                icon: Icon(Icons.arrow_forward),
+              ),
             ),
           ),
         ),

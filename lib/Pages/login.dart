@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+import 'package:service_provider/Pages/Register.dart';
+import 'package:service_provider/Pages/forgotpassword.dart';
+import 'package:service_provider/Pages/launcher.dart';
 import 'package:service_provider/firebaseHelper.dart';
-import 'package:service_provider/routes.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -82,7 +86,8 @@ class _LoginPageState extends State<LoginPage> {
       final status = await AuthServices.loginto(email, password);
       if (status) {
         EasyLoading.dismiss();
-        Navigator.pushReplacementNamed(context, launcherRoute);
+        // await getCurrUserModel();
+        Get.to(launcherPage());
       } else {
         await _auth.signOut();
       }
@@ -212,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
           width: 70,
           child: TextButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, registerRoute);
+              Get.to(RegisterPage());
             },
             child: Text(
               'Sign up',
@@ -232,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       height: 40,
       child: TextButton(
-        onPressed: () {Navigator.pushReplacementNamed(context, forgotPasswordRoute);},
+        onPressed: () {Get.to(forgotPassword());},
         child: Text(
           "Forgot Password?",
           style: TextStyle(

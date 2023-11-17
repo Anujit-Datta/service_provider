@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:service_provider/routes.dart';
+import 'package:get/get.dart';
+import 'package:service_provider/Pages/login.dart';
+import 'package:service_provider/Pages/userHome.dart';
 import 'package:service_provider/userModel.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -99,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         TextButton(
           onPressed: () {
-            Navigator.pushReplacementNamed(context, '/login');
+            Get.to(LoginPage());
           },
           child: Text(
             'Sign in',
@@ -143,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         .collection('Users')
                         .doc(user.email)
                         .set(user.toMap()).onError((errorcode, stackTrace) {setState(() {errorCode=errorcode.toString();});})
-                        .whenComplete(() => Navigator.pushReplacementNamed(context, userHomePageRoute));
+                        .whenComplete(() => Get.to(userHomePage()));
                 }
               },
               icon: Icon(

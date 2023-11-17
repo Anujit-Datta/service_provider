@@ -1,9 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:service_provider/routes.dart';
+import 'package:service_provider/Controllers/providersController.dart';
+import 'package:service_provider/Pages/services.dart';
 import 'package:service_provider/serviceModel.dart';
-int currService=-1;
+import 'package:service_provider/userModel.dart';
+import 'package:get/get.dart';
+import 'launcher.dart';
+
+String currUserImage='';
+String currUserName='';
+List servicesImage = [
+  'assets/electrician.png',
+  'assets/plumber.png',
+  'assets/cleaner.png',
+  'assets/painter.png',
+  'assets/ISP.png'
+];
 
 class userHomePage extends StatefulWidget {
   const userHomePage({super.key});
@@ -13,11 +26,15 @@ class userHomePage extends StatefulWidget {
 
 class _userHomePageState extends State<userHomePage> {
   bool proceed = false;
+
   @override
   Widget build(BuildContext context) {
-
-    final _db = FirebaseFirestore.instance;
+    ProvidersController controller=Get.put(ProvidersController());
     final _auth= FirebaseAuth.instance;
+    getCurrUserModel().then((value) {
+      currUserImage=currUserModel.image;
+      currUserName=currUserModel.name;
+    });
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
@@ -31,7 +48,10 @@ class _userHomePageState extends State<userHomePage> {
               color: Color(0xff4c505b),
               size: 40,
             ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+            onPressed: (){
+              Scaffold.of(context).openDrawer();
+
+            },
           );
         }),
         title: Row(
@@ -83,9 +103,9 @@ class _userHomePageState extends State<userHomePage> {
                       crossAxisSpacing: 20.0,
                       mainAxisSpacing: 20.0,
                     ),
-                    itemCount: services.length,
+                    itemCount: controller.services.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return serviceContainer(services[index], index);
+                      return serviceContainer(controller.services[index], index,controller);
                     }),
               ),
             ]),
@@ -108,10 +128,10 @@ class _userHomePageState extends State<userHomePage> {
                 CircleAvatar(
                   radius: 70,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage('https://img.icons8.com/ios-filled/100/user-male-circle.png'),
+                  backgroundImage: NetworkImage(currUserImage==''?'https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656':currUserImage),
                 ),
                 Text(
-                    'Name',
+                    currUserName,
                   style: TextStyle(
                     fontSize: 25,
                   ),
@@ -131,7 +151,7 @@ class _userHomePageState extends State<userHomePage> {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
-              Navigator.pushReplacementNamed(context, userHomePageRoute);
+              Get.to(()=>userHomePage());
             },
           ),
           ListTile(
@@ -146,7 +166,7 @@ class _userHomePageState extends State<userHomePage> {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
-              Navigator.pushReplacementNamed(context, userHomePageRoute);
+              
             },
           ),
           ListTile(
@@ -161,7 +181,7 @@ class _userHomePageState extends State<userHomePage> {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
-              Navigator.pushReplacementNamed(context, userHomePageRoute);
+              
             },
           ),
           ListTile(
@@ -176,7 +196,7 @@ class _userHomePageState extends State<userHomePage> {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
-              Navigator.pushReplacementNamed(context, userHomePageRoute);
+              
             },
           ),
           ListTile(
@@ -191,7 +211,7 @@ class _userHomePageState extends State<userHomePage> {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
-              Navigator.pushReplacementNamed(context, userHomePageRoute);
+              
             },
           ),
           ListTile(
@@ -206,8 +226,13 @@ class _userHomePageState extends State<userHomePage> {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
+              currUserModel=userModel(phone: '', email: '', address: '');
+              controller.currService=-1;
+              currUserDoc='';
+              currUserName='';
+              currUserImage='';
               _auth.signOut();
-              Navigator.pushReplacementNamed(context, launcherRoute);
+              Get.to(()=>launcherPage());
             },
           ),
           SizedBox(
@@ -215,7 +240,7 @@ class _userHomePageState extends State<userHomePage> {
           ),
         ],
       ),
-      floatingActionButton: proceedButton(),
+      floatingActionButton: proceedButton(controller),
       bottomNavigationBar: BottomNavigationBar(
           items: [
         BottomNavigationBarItem(
@@ -234,66 +259,70 @@ class _userHomePageState extends State<userHomePage> {
     );
   }
 
-  Container proceedButton() {
+
+  Container proceedButton(ProvidersController controller) {
     if (proceed)
       return Container(
         height: 70,
         width: 70,
-        child: FittedBox(
-          child: FloatingActionButton(
-            splashColor: Colors.blueGrey,
-            onPressed: () {
-              serviceName=services[currService];
-              Navigator.pushNamed(context, servicesRoute);
-            },
-            child: Icon(Icons.arrow_forward_ios),
-          ),
-        ),
+        child: GetBuilder<ProvidersController>(builder: (_){
+          return FittedBox(
+            child: FloatingActionButton(
+              splashColor: Colors.blueGrey,
+              onPressed: () {
+                Get.to(()=>Services());
+              },
+              child: Icon(Icons.arrow_forward_ios),
+            ),
+          );
+        },),
       );
     else
       return Container();
   }
 
-  serviceContainer(String name, int index) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (currService == index) {
-            currService = -1;
-            proceed = false;
-          } else {
-            currService=index;
-            proceed = true;
-          }
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.all(1.0),
-        decoration: BoxDecoration(
-          color: currService == index
-              ? Colors.blueGrey
-              : Colors.lightBlueAccent.shade100,
-          border: Border.all(
-            color: currService == index
+  serviceContainer(String name, int index,ProvidersController controller) {
+    return GetBuilder<ProvidersController>(builder: (_){
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            if (controller.currService == index) {
+              controller.currService = -1;
+              proceed = false;
+            } else {
+              controller.currService=index;
+              proceed = true;
+            }
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.all(1.0),
+          decoration: BoxDecoration(
+            color: controller.currService == index
                 ? Colors.blueGrey
-                : Colors.blueGrey.withOpacity(0),
-            width: 2.0,
+                : Colors.lightBlueAccent.shade100,
+            border: Border.all(
+              color: controller.currService == index
+                  ? Colors.blueGrey
+                  : Colors.blueGrey.withOpacity(0),
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(30.0),
           ),
-          borderRadius: BorderRadius.circular(30.0),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(servicesImage[index]),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.015,
+                ),
+                Text(
+                  name,
+                  style: TextStyle(fontSize: 25),
+                )
+              ]),
         ),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(servicesImage[index]),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.015,
-              ),
-              Text(
-                name,
-                style: TextStyle(fontSize: 25),
-              )
-            ]),
-      ),
-    );
+      );
+    },);
   }
 }

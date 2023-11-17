@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-import '../routes.dart';
+import 'package:get/get.dart';
+import 'package:service_provider/Pages/Register.dart';
+import 'package:service_provider/Pages/login.dart';
 
 class forgotPassword extends StatefulWidget {
   const forgotPassword({super.key});
@@ -165,7 +166,7 @@ class _forgotPasswordState extends State<forgotPassword> {
           width: 100,
           child: TextButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, registerRoute);
+              Get.to(RegisterPage());
             },
             child: Text(
               'Sign up',
@@ -184,7 +185,7 @@ class _forgotPasswordState extends State<forgotPassword> {
       height: 40,
       width: 100,
       child: TextButton(
-        onPressed: () {Navigator.pushReplacementNamed(context, loginRoute);},
+        onPressed: () {Get.to(LoginPage());},
         child: Text(
           "Sign in",
           style: TextStyle(

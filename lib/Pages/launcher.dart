@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:service_provider/Pages/login.dart';
+import 'package:service_provider/Pages/userHome.dart';
 import 'package:service_provider/firebaseHelper.dart';
-import 'package:service_provider/routes.dart';
+import 'package:service_provider/serviceModel.dart';
 
 class launcherPage extends StatelessWidget {
   const launcherPage({super.key});
@@ -9,9 +12,10 @@ class launcherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Future.delayed(Duration.zero, (){
       if(AuthServices.currentUser != null){
-        Navigator.pushReplacementNamed(context, userHomePageRoute);
+        currUserDoc=AuthServices.currentUser?.email.toString();
+        Get.to(userHomePage());
       }else{
-        Navigator.pushReplacementNamed(context, loginRoute);
+        Get.to(LoginPage());
       }
     });
     return const Scaffold(

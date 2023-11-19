@@ -166,7 +166,7 @@ class _forgotPasswordState extends State<forgotPassword> {
           width: 100,
           child: TextButton(
             onPressed: () {
-              Get.to(RegisterPage());
+              Get.to(() =>RegisterPage());
             },
             child: Text(
               'Sign up',
@@ -185,7 +185,7 @@ class _forgotPasswordState extends State<forgotPassword> {
       height: 40,
       width: 100,
       child: TextButton(
-        onPressed: () {Get.to(LoginPage());},
+        onPressed: () {Get.to(() =>LoginPage());},
         child: Text(
           "Sign in",
           style: TextStyle(

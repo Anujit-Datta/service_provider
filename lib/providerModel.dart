@@ -4,6 +4,8 @@ const providerEmail = 'email';
 const providerAddress = 'address';
 const providerImage = 'image';
 const providerType = 'type';
+const providerScore='score';
+
 
 class providerModel{
   String address;
@@ -12,6 +14,7 @@ class providerModel{
   String name;
   String phone;
   String type;
+  int score;
 
   providerModel({
     required this.phone,
@@ -20,6 +23,7 @@ class providerModel{
     required this.address,
     this.image = '',
     required this.type,
+    this.score=0,
   });
 
   Map<String, dynamic> toMap(){
@@ -30,6 +34,7 @@ class providerModel{
       providerAddress : address,
       providerImage : image,
       providerType: type,
+      providerScore: score,
     };
     return Map;
   }
@@ -41,5 +46,6 @@ class providerModel{
     address: map[providerAddress],
     image: map[providerImage],
     type: map[providerType],
+    score: map[providerScore],
   );
 }

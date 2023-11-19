@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
       if (status) {
         EasyLoading.dismiss();
         // await getCurrUserModel();
-        Get.to(launcherPage());
+        Get.to(() =>launcherPage());
       } else {
         await _auth.signOut();
       }
@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
           width: 70,
           child: TextButton(
             onPressed: () {
-              Get.to(RegisterPage());
+              Get.to(() =>RegisterPage());
             },
             child: Text(
               'Sign up',
@@ -237,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       height: 40,
       child: TextButton(
-        onPressed: () {Get.to(forgotPassword());},
+        onPressed: () {Get.to(() =>forgotPassword());},
         child: Text(
           "Forgot Password?",
           style: TextStyle(

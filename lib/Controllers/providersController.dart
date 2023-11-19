@@ -1,24 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:service_provider/providerModel.dart';
+import '../Pages/services.dart';
+import '../Pages/userHome.dart';
 
 class ProvidersController extends GetxController{
   final _db=FirebaseFirestore.instance;
 
-  int itemsAmount=0;
+  var selectedServiceProvider=-1;
   int currService=-1;
-  bool isLoaded = false;
-  List services = ['Electrician', 'Plumber', 'Cleaner', 'Painter', 'ISP'];
-  late List<Map<String, dynamic>> providers;
-  providersInfoGetter() async {
-    itemsAmount = 0;
-    List<Map<String, dynamic>> templist = [];
-    var snap = await _db.collection(services[currService]).get();
-    snap.docs.forEach((element) {
-      templist.add(element.data());
-      itemsAmount += 1;
+  bool _proceed = false;
+  bool get proceed=>_proceed;
+
+
+  List<providerModel> providers=[];
+
+  Future providersInfoGetter() async {
+    providers=[];
+    itemsAmount=0;
+    await _db.collection(services[currService]).get().then((value) {
+      value.docs.forEach((element) {
+        providers.add(providerModel.fromMap(element.data()));
+        itemsAmount<providers.length?itemsAmount+=1:itemsAmount+=0;
+      });
+      isLoaded=true;
+      update();
     });
-    isLoaded = true;
-    providers = templist;
+  }
+
+  currServiceSetter(int x){
+    currService=x;
+    update();
+  }
+
+  proceedSetter(bool a){
+    _proceed=a;
+    update();
+  }
+
+  selectedSetter(int x){
+    selectedServiceProvider=x;
     update();
   }
 

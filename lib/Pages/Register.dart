@@ -101,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         TextButton(
           onPressed: () {
-            Get.to(LoginPage());
+            Get.to(() =>LoginPage());
           },
           child: Text(
             'Sign in',
@@ -145,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         .collection('Users')
                         .doc(user.email)
                         .set(user.toMap()).onError((errorcode, stackTrace) {setState(() {errorCode=errorcode.toString();});})
-                        .whenComplete(() => Get.to(userHomePage()));
+                        .whenComplete(() => Get.to(() =>userHomePage()));
                 }
               },
               icon: Icon(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/Controllers/providersController.dart';
-import 'package:service_provider/serviceModel.dart';
+import 'package:service_provider/Pages/services.dart';
 
 class selectedServiceInfo extends StatelessWidget {
   const selectedServiceInfo({super.key});
@@ -41,7 +41,7 @@ class selectedServiceInfo extends StatelessWidget {
                     child: CircleAvatar(
                       radius: MediaQuery.of(context).size.width * 0.35,
                       foregroundImage: NetworkImage(
-                        controller.providers[selectedServiceProvider]['image'],
+                        Providers[controller.selectedServiceProvider].image,
                       ),
                       //backgroundImage: ,
                     ),
@@ -51,7 +51,7 @@ class selectedServiceInfo extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      controller.providers[selectedServiceProvider]['name'],
+                      controller.providers[controller.selectedServiceProvider].name,
                       style: TextStyle(
                         fontSize: 25,
                       ),
@@ -75,7 +75,7 @@ class selectedServiceInfo extends StatelessWidget {
                             horizontalTitleGap: 5,
                             minLeadingWidth: 20,
                             title: Text(
-                              controller.providers[selectedServiceProvider]['type'],
+                              controller.providers[controller.selectedServiceProvider].type,
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                 fontSize: 18,
@@ -93,7 +93,7 @@ class selectedServiceInfo extends StatelessWidget {
                             horizontalTitleGap: 5,
                             minLeadingWidth: 20,
                             title: Text(
-                              controller.providers[selectedServiceProvider]['address'],
+                              controller.providers[controller.selectedServiceProvider].address,
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                 fontSize: 18,
@@ -110,7 +110,7 @@ class selectedServiceInfo extends StatelessWidget {
                             horizontalTitleGap: 5,
                             minLeadingWidth: 20,
                             title: Text(
-                              controller.providers[selectedServiceProvider]['score'].toString() +
+                              controller.providers[controller.selectedServiceProvider].score.toString() +
                                   ' Serves',
                               textAlign: TextAlign.start,
                               style: TextStyle(

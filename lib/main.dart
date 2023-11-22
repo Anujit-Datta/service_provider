@@ -1,10 +1,11 @@
   import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
   import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
   import 'package:service_provider/Pages/launcher.dart';
   import 'package:firebase_core/firebase_core.dart';
-  import 'firebase_options.dart';
+import 'Controllers/providersController.dart';
+import 'firebase_options.dart';
 
   void main() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 
     @override
     Widget build(BuildContext context) {
+      ProvidersController controller = Get.put(ProvidersController());
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',

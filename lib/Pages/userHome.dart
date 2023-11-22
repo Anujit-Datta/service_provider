@@ -30,9 +30,8 @@ class _userHomePageState extends State<userHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    EasyLoading.dismiss();
     UserController controllerU = Get.find<UserController>();
-    ProvidersController controller = Get.put(ProvidersController());
+    ProvidersController controller = Get.find<ProvidersController>();
     final _auth = FirebaseAuth.instance;
     controllerU.getCurrUserModel().then((value) {
       currUserImage = controllerU.currUserModel.image;

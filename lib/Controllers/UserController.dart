@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../userModel.dart';
 
@@ -13,4 +14,12 @@ class UserController extends GetxController {
       update();
     });
   }
+
+  String _resetMsg = '';
+  String get resetMsg => _resetMsg;
+  resetMsgSetter(String msg){
+    _resetMsg=msg;
+    update();
+  }
+
 }

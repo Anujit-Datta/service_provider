@@ -7,6 +7,8 @@ import 'package:service_provider/Pages/forgotpassword.dart';
 import 'package:service_provider/Pages/launcher.dart';
 import 'package:service_provider/firebaseHelper.dart';
 
+import '../Controllers/UserController.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -237,7 +239,7 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       height: 40,
       child: TextButton(
-        onPressed: () {Get.to(() =>forgotPassword());},
+        onPressed: () {Get.find<UserController>().resetMsgSetter('');Get.to(() =>forgotPassword());},
         child: Text(
           "Forgot Password?",
           style: TextStyle(

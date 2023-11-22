@@ -2,21 +2,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:service_provider/Controllers/UserController.dart';
 import 'package:service_provider/Pages/Register.dart';
 import 'package:service_provider/Pages/login.dart';
+
+
 
 class forgotPassword extends StatefulWidget {
   const forgotPassword({super.key});
 
   @override
   State<forgotPassword> createState() => _forgotPasswordState();
+
+  static final _auth = FirebaseAuth.instance;
 }
 
 class _forgotPasswordState extends State<forgotPassword> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String _resetMsg = '';
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +34,7 @@ class _forgotPasswordState extends State<forgotPassword> {
           key: _formKey,
           child: Stack(
             children: [
-              ForgotPasswordText(),
+              ForgotPasswordText(context),
               SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.only(
@@ -47,12 +50,14 @@ class _forgotPasswordState extends State<forgotPassword> {
                       Reset_text_and_Button(),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.13,
-                        child: Text(
-                          _resetMsg,
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
-                        ),
+                        child: GetBuilder<UserController>(builder: (Ctrl){
+                          return Text(
+                            Get.find<UserController>().resetMsg,
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          );
+                        },),
                       ),
                       Register_ask(),
                       Login_ask(),
@@ -67,32 +72,24 @@ class _forgotPasswordState extends State<forgotPassword> {
     );
   }
 
-  static final _auth = FirebaseAuth.instance;
-
   void validation() async {
+    UserController controllerU=Get.find<UserController>();
     EasyLoading.show(status: 'Logging in', dismissOnTap: false);
     try {
       final email = _emailController.text;
-      await _auth.sendPasswordResetEmail(email: email).onError((error, stackTrace) {
-        EasyLoading.dismiss();
-        setState(() {
-          _resetMsg = error.toString();
-        });
+      await forgotPassword._auth.sendPasswordResetEmail(email: email).onError((error, stackTrace) {
+        controllerU.resetMsgSetter(error.toString());
       }).whenComplete(() {
         EasyLoading.dismiss();
-        setState(() {
-          _resetMsg= 'Password Reset link sent to email\nNote: Check Spam folder also';
-        });
+        controllerU.resetMsgSetter('Password Reset link sent to email\nNote: Check Spam folder also');
       });
     } on FirebaseAuthException catch (error) {
       EasyLoading.dismiss();
-      setState(() {
-        _resetMsg = error.message.toString();
-      });
+      controllerU.resetMsgSetter(error.message.toString());
     }
   }
 
-  Container ForgotPasswordText() {
+  Container ForgotPasswordText(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
           left: 10, top: MediaQuery.of(context).size.height * 0.11),
@@ -149,9 +146,11 @@ class _forgotPasswordState extends State<forgotPassword> {
             backgroundColor: Color(0xff4c505b),
             radius: 35,
             child: IconButton(
-              onPressed: validation,
               color: Colors.white,
               icon: Icon(Icons.arrow_forward),
+              onPressed: (){
+                if(_formKey.currentState!.validate()){validation();}
+              },
             ),
           ),
         ),
@@ -197,5 +196,4 @@ class _forgotPasswordState extends State<forgotPassword> {
       ),
     );
   }
-
 }

@@ -15,6 +15,7 @@ class UserController extends GetxController {
     });
   }
 
+
   String _resetMsg = '';
   String get resetMsg => _resetMsg;
   resetMsgSetter(String msg){

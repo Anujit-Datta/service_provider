@@ -121,13 +121,8 @@ class _userHomePageState extends State<userHomePage> {
                         return GestureDetector(
                           onTap: () {
                             EasyLoading.dismiss();
-                            if (controller.currService == index) {
-                              controller.currServiceSetter(-1);
-                              controller.proceedSetter(false);
-                            } else {
-                              controller.currServiceSetter(index);
-                              controller.proceedSetter(true);
-                            }
+                            controller.currService=index;
+                            Get.to(() => Services());
                           },
                           child: Container(
                             padding: EdgeInsets.all(1.0),
@@ -370,22 +365,7 @@ class _userHomePageState extends State<userHomePage> {
           ),
         ],
       ),
-      floatingActionButton: GetBuilder<ProvidersController>(builder: (_){
-        return controller.proceed
-            ? Container(
-          height: 70,
-          width: 70,
-          child: FittedBox(
-            child: FloatingActionButton(
-              splashColor: Colors.blueGrey,
-              onPressed: () {
-                Get.to(() => Services());
-              },
-              child: Icon(Icons.arrow_forward_ios),
-            ),
-          ),
-        ) : Container();
-      },),
+
       bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(

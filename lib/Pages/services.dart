@@ -91,7 +91,7 @@ class _ServicesState extends State<Services> {
             height: 150,
             child: Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(65),
               ),
               elevation: 7,
               margin: EdgeInsets.only(left: 20, right: 20, top: 30),
@@ -100,7 +100,7 @@ class _ServicesState extends State<Services> {
                   Expanded(
                     flex: 1,
                     child: CircleAvatar(
-                      radius: 60,
+                      radius: 55,
                       backgroundColor: Colors.white,
                       backgroundImage: NetworkImage(
                         Providers[index].image==''?'https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656':Providers[index].image,
@@ -153,12 +153,7 @@ class _ServicesState extends State<Services> {
                           ),
                         ],
                       ),
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(Icons.arrow_forward_ios,),
-                        ],
-                      ),
+
                     ),
                   ),
                 ],

@@ -88,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
       final status = await AuthServices.loginto(email, password);
       if (status) {
         EasyLoading.dismiss();
-        // await getCurrUserModel();
         Get.to(() =>launcherPage());
       } else {
         await _auth.signOut();

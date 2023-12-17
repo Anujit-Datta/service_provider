@@ -22,4 +22,11 @@ class UserController extends GetxController {
     update();
   }
 
+  int _bottomNevBarItemSelected = 1;
+  int get bottomNevBarItemSelected => _bottomNevBarItemSelected;
+  bottomNevBarItemSetter(int item){
+    _bottomNevBarItemSelected=item;
+    update();
+  }
+
 }

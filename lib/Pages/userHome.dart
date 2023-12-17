@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:service_provider/Controllers/UserController.dart';
 import 'package:service_provider/Controllers/providersController.dart';
+import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/services.dart';
 import 'package:service_provider/userModel.dart';
 import 'package:get/get.dart';
 import 'launcher.dart';
 
 List services = ['Electrician', 'Plumber', 'Cleaner', 'Painter', 'ISP'];
-String currUserImage='';
-String currUserName='';
 List servicesImage = [
   'assets/electrician.png',
   'assets/plumber.png',
@@ -19,24 +18,14 @@ List servicesImage = [
   'assets/ISP.png'
 ];
 
-class userHomePage extends StatefulWidget {
+class userHomePage extends StatelessWidget {
   const userHomePage({super.key});
-  @override
-  State<userHomePage> createState() => _userHomePageState();
-}
-
-class _userHomePageState extends State<userHomePage> {
-
-
   @override
   Widget build(BuildContext context) {
     UserController controllerU = Get.find<UserController>();
     ProvidersController controller = Get.find<ProvidersController>();
     final _auth = FirebaseAuth.instance;
-    controllerU.getCurrUserModel().then((value) {
-      currUserImage = controllerU.currUserModel.image;
-      currUserName = controllerU.currUserModel.name;
-    });
+    controllerU.getCurrUserModel();
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
@@ -183,24 +172,27 @@ class _userHomePageState extends State<userHomePage> {
                 .of(context)
                 .size
                 .width * 0.30,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 70,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(currUserImage == ''
-                      ? 'https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656'
-                      : currUserImage),
-                ),
-                Text(
-                  currUserName,
-                  style: TextStyle(
-                    fontSize: 25,
+            child: GetBuilder<UserController>(builder: (_){
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 70,
+                    backgroundColor: Colors.transparent,
+                    child: CircularProgressIndicator(),
+                    foregroundImage: NetworkImage(controllerU.currUserModel.image == ''
+                        ? 'https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656'
+                        : controllerU.currUserModel.image),
                   ),
-                ),
-              ],
-            ),
+                  Text(
+                    controllerU.currUserModel.name,
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                ],
+              );
+            },),
           ),
           ListTile(
             contentPadding: EdgeInsets.only(
@@ -345,12 +337,9 @@ class _userHomePageState extends State<userHomePage> {
                   style: TextStyle(fontSize: 20),
                 ),
                 onTap: () {
-                  controllerU.currUserModel =
-                      userModel(phone: '', email: '', address: '');
+                  controllerU.currUserModel = userModel(phone: '', email: '', address: '',name: '',image: '');
                   controller.currServiceSetter(-1);
                   controllerU.currUserDoc = '';
-                  currUserName = '';
-                  currUserImage = '';
                   _auth.signOut();
                   Get.to(() => launcherPage());
                 },
@@ -366,7 +355,15 @@ class _userHomePageState extends State<userHomePage> {
         ],
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: GetBuilder<UserController>(builder: (_) {
+      return BottomNavigationBar(
+        onTap: (index) {
+          controllerU.bottomNevBarItemSetter(index);
+          if(index==0){
+            Get.to(() =>Profile());
+          }
+        },
+        currentIndex: controllerU.bottomNevBarItemSelected,
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
@@ -380,7 +377,8 @@ class _userHomePageState extends State<userHomePage> {
               icon: Icon(Icons.checklist_rtl_sharp),
               label: 'History',
             ),
-          ]),
+          ]);
+      }),
     );
   }
 }

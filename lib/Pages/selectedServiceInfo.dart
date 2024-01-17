@@ -37,7 +37,7 @@ class selectedServiceInfo extends StatelessWidget {
               return ListView(
                 children: [
                   CircleAvatar(
-                    radius: MediaQuery.of(context).size.width * 0.35,
+                    radius: MediaQuery.of(context).size.width * 0.37,
                     child: CircleAvatar(
                       radius: MediaQuery.of(context).size.width * 0.35,
                       foregroundImage: NetworkImage(
@@ -136,22 +136,6 @@ class selectedServiceInfo extends StatelessWidget {
                             ),
                             dense: true,
                           ),
-                          // ListView.builder(
-                          //   itemCount: 2,
-                          //     itemBuilder: (Context,int index){
-                          //       return Container(
-                          //         height: 50,
-                          //         width: 100,
-                          //         child: Card(
-                          //           shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(10),
-                          //           ),
-                          //           surfaceTintColor: Colors.amber,
-                          //           //child: Column,
-                          //         ),
-                          //       );
-                          //     }
-                          // ),
                         ],
                       ),
                     ),

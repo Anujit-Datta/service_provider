@@ -9,9 +9,6 @@ class ProvidersController extends GetxController{
 
   var selectedServiceProvider=-1;
   int currService=-1;
-  bool _proceed = false;
-  bool get proceed=>_proceed;
-
 
   List<providerModel> providers=[];
 
@@ -33,10 +30,6 @@ class ProvidersController extends GetxController{
     update();
   }
 
-  proceedSetter(bool a){
-    _proceed=a;
-    update();
-  }
 
   selectedSetter(int x){
     selectedServiceProvider=x;

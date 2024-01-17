@@ -8,18 +8,13 @@ import 'package:service_provider/Pages/login.dart';
 
 
 
-class forgotPassword extends StatefulWidget {
-  const forgotPassword({super.key});
+class forgotPassword extends StatelessWidget {
+  forgotPassword({super.key});
 
-  @override
-  State<forgotPassword> createState() => _forgotPasswordState();
-
-  static final _auth = FirebaseAuth.instance;
-}
-
-class _forgotPasswordState extends State<forgotPassword> {
   final _emailController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,7 +72,7 @@ class _forgotPasswordState extends State<forgotPassword> {
     EasyLoading.show(status: 'Logging in', dismissOnTap: false);
     try {
       final email = _emailController.text;
-      await forgotPassword._auth.sendPasswordResetEmail(email: email).onError((error, stackTrace) {
+      await _auth.sendPasswordResetEmail(email: email).onError((error, stackTrace) {
         controllerU.resetMsgSetter(error.toString());
       }).whenComplete(() {
         EasyLoading.dismiss();
@@ -196,4 +191,6 @@ class _forgotPasswordState extends State<forgotPassword> {
       ),
     );
   }
+
+  static final _auth = FirebaseAuth.instance;
 }

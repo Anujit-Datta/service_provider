@@ -37,11 +37,14 @@ class selectedServiceInfo extends StatelessWidget {
               return ListView(
                 children: [
                   CircleAvatar(
-                    radius: MediaQuery.of(context).size.width * 0.37,
+                    radius: MediaQuery.of(context).size.width * 0.36,
+                    foregroundColor: Colors.lightBlueAccent,
+                    backgroundColor: Colors.lightBlueAccent,
                     child: CircleAvatar(
                       radius: MediaQuery.of(context).size.width * 0.35,
+                      backgroundColor: Colors.lightBlueAccent,
                       foregroundImage: NetworkImage(
-                        Providers[controller.selectedServiceProvider].image,
+                        Providers[controller.selectedServiceProvider].image==''?'https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656':Providers[controller.selectedServiceProvider].image,
                       ),
                       //backgroundImage: ,
                     ),

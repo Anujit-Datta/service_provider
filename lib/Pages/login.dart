@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -85,6 +86,12 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final email = _emailController.text;
       final password = _passwordController.text;
+      var login=await FirebaseFirestore.instance.collection('Users').doc(_emailController.text).get();
+      if(!login.exists){
+        loginType=false;
+      }else{
+        loginType=true;
+      }
       final status = await AuthServices.loginto(email, password);
       if (status) {
         EasyLoading.dismiss();

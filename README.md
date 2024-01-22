@@ -1,6 +1,6 @@
 # service_provider
 
-A new Flutter project.
+A local services finding app Flutter project.
 
 ## Getting Started
 

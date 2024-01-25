@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:service_provider/Controllers/UserController.dart';
 import 'package:service_provider/Controllers/providersController.dart';
 import 'package:service_provider/Pages/About.dart';
+import 'package:service_provider/Pages/History.dart';
 import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/services.dart';
 import 'package:service_provider/userModel.dart';
@@ -252,7 +253,7 @@ class SideNavigationDrawer extends StatelessWidget {
             style: TextStyle(fontSize: 20),
           ),
           onTap: () {
-
+            Get.to(()=>History());
           },
         ),
         ListTile(

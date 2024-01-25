@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         SizedBox(
           height: 40,
-          width: 70,
+          width: 90,
           child: TextButton(
             onPressed: () {
               Get.to(() =>RegisterPage());

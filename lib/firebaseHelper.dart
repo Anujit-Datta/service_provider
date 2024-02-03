@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 class AuthServices{
     static final _auth = FirebaseAuth.instance;
 
@@ -9,8 +10,6 @@ class AuthServices{
       final credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return credential.user != null;
     }
-
-
 
 
 

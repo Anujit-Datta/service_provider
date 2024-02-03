@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:service_provider/providerModel.dart';
+import 'package:service_provider/Models/providerModel.dart';
 import '../Pages/services.dart';
 import '../Pages/userHome.dart';
 
@@ -10,17 +10,18 @@ class ProvidersController extends GetxController{
   final _auth=FirebaseAuth.instance;
 
   late providerModel currProviderModel;
-  String currProviderDoc='';
+  late String currProviderDoc;
   Future getCurrProviderModel() async{
     currProviderDoc=await _auth.currentUser!.email!;
     await _db.collection('providers').doc(currProviderDoc).get().then((value){
-      getCurrProviderModelAssist(value.data()!['category']);
+      getCurrProviderModelAssist(value.data()!['type']);
     });
   }
   Future getCurrProviderModelAssist(String currProviderCollection) async {
     await _db.collection(currProviderCollection).doc(currProviderDoc).get().then((value) {
       currProviderModel = providerModel.fromMap(value.data() as Map<String, dynamic>);
       update();
+      return;
     });
   }
 
@@ -28,12 +29,15 @@ class ProvidersController extends GetxController{
   int currService=-1;
 
   List<providerModel> providers=[];
+  List<bool> booked=[];
   Future providersInfoGetter() async {
     providers=[];
+    booked=[];
     itemsAmount=0;
     await _db.collection(services[currService]).get().then((value) {
       value.docs.forEach((element) {
         providers.add(providerModel.fromMap(element.data()));
+        booked.add(false);
         itemsAmount<providers.length?itemsAmount+=1:itemsAmount+=0;
       });
       isLoaded=true;

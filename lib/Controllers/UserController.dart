@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../userModel.dart';
+import '../Models/userModel.dart';
 
 class UserController extends GetxController {
   final _db=FirebaseFirestore.instance;
@@ -14,7 +13,6 @@ class UserController extends GetxController {
       update();
     });
   }
-
 
   String _resetMsg = '';
   String get resetMsg => _resetMsg;

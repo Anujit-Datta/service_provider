@@ -7,7 +7,6 @@ import 'package:service_provider/Pages/Register.dart';
 import 'package:service_provider/Pages/forgotpassword.dart';
 import 'package:service_provider/Pages/launcher.dart';
 import 'package:service_provider/firebaseHelper.dart';
-
 import '../Controllers/UserController.dart';
 
 

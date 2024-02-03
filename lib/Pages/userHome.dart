@@ -7,7 +7,7 @@ import 'package:service_provider/Pages/About.dart';
 import 'package:service_provider/Pages/History.dart';
 import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/services.dart';
-import 'package:service_provider/userModel.dart';
+import 'package:service_provider/Models/userModel.dart';
 import 'package:get/get.dart';
 import 'Contact.dart';
 import 'launcher.dart';
@@ -24,7 +24,7 @@ List servicesImage = [
 List<Widget> pages=[
   profileBody(controllerU: Get.find<UserController>(),controller: Get.find<ProvidersController>(),),
   userHomeBody(controller: Get.find<ProvidersController>()),
-  profileBody(controllerU: Get.find<UserController>(),controller: Get.find<ProvidersController>(),),
+  HistoryBody(monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],),
 ];
 List pagesName=['Profile','Services','History'];
 
@@ -123,7 +123,7 @@ class _userHomePageState extends State<userHomePage> {
   }
 }
 
-class SideNavigationDrawer extends StatelessWidget {
+class SideNavigationDrawer extends StatefulWidget {
   const SideNavigationDrawer({
     super.key,
     required this.controllerU,
@@ -135,6 +135,16 @@ class SideNavigationDrawer extends StatelessWidget {
   final ProvidersController controller;
   final FirebaseAuth _auth;
 
+  @override
+  State<SideNavigationDrawer> createState() => _SideNavigationDrawerState();
+}
+
+class _SideNavigationDrawerState extends State<SideNavigationDrawer> {
+  @override
+  void initState() {
+    loginType==true?Get.find<UserController>().getCurrUserModel():Get.find<ProvidersController>().getCurrProviderModel();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return NavigationDrawer(
@@ -167,15 +177,15 @@ class SideNavigationDrawer extends StatelessWidget {
                   radius: 70,
                   backgroundColor: Colors.transparent,
                   child: CircularProgressIndicator(),
-                  foregroundImage: NetworkImage(loginType==true?controllerU.currUserModel.image == ''
+                  foregroundImage: NetworkImage(loginType==true?widget.controllerU.currUserModel.image == ''
                       ? 'https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656'
-                      : controllerU.currUserModel.image
-                  :controller.currProviderModel.image == ''
+                      : widget.controllerU.currUserModel.image
+                  :widget.controller.currProviderModel.image == ''
                       ? 'https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656'
-                      : controller.currProviderModel.image),
+                      : widget.controller.currProviderModel.image),
                 ),
                 Text(
-                  loginType==true?controllerU.currUserModel.name:controller.currProviderModel.name,
+                  loginType==true?widget.controllerU.currUserModel.name:widget.controller.currProviderModel.name,
                   style: TextStyle(
                     fontSize: 25,
                   ),
@@ -327,10 +337,10 @@ class SideNavigationDrawer extends StatelessWidget {
                 style: TextStyle(fontSize: 20),
               ),
               onTap: () {
-                controllerU.currUserModel = userModel(phone: '', email: '', address: '',name: '',image: '');
-                controller.currServiceSetter(-1);
-                controllerU.currUserDoc = '';
-                _auth.signOut();
+                widget.controllerU.currUserModel = userModel(phone: '', email: '', address: '',name: '',image: '');
+                widget.controller.currServiceSetter(-1);
+                widget.controllerU.currUserDoc = '';
+                widget._auth.signOut();
                 Get.to(() => launcherPage());
               },
             );

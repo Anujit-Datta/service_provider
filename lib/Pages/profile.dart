@@ -16,6 +16,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     UserController controllerU=Get.find<UserController>();
+    ProvidersController controller=Get.find<ProvidersController>();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -45,7 +46,7 @@ class _ProfileState extends State<Profile> {
           )
         ],
       ),
-      body: profileBody(controllerU: controllerU,controller: Get.find<ProvidersController>(),),
+      body: profileBody(controllerU: controllerU,controller: controller,),
     );
   }
 }
@@ -71,97 +72,102 @@ class _profileBodyState extends State<profileBody> {
       children: [
         Container(
             height: MediaQuery.of(context).size.height * 0.85,
-            child: GetBuilder<UserController>(builder: (_){
-              return ListView(
-                children: [
-                  CircleAvatar(
-                    radius: MediaQuery.of(context).size.width * 0.35,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.lightBlueAccent,
-                      radius: MediaQuery.of(context).size.width * 0.35,
-                      foregroundImage: NetworkImage(
-                        loginType==true?widget.controllerU.currUserModel.image:widget.controller.currProviderModel.image,
-                      ),
-                      //backgroundImage: ,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: Text(
-                      loginType==true?widget.controllerU.currUserModel.name:widget.controller.currProviderModel.name,
-                      style: TextStyle(
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 80),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: Container(
-                                child: Icon(
-                                  Icons.location_on,
-                                  color: Colors.grey,
-                                )),
-                            horizontalTitleGap: 5,
-                            minLeadingWidth: 20,
-                            title: Text(
-                              loginType==true?widget.controllerU.currUserModel.address:widget.controller.currProviderModel.address,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            dense: true,
+            child: GetBuilder<UserController>(
+              builder: (uController){
+              return GetBuilder<ProvidersController>(
+                builder: (pController) {
+                  return ListView(
+                    children: [
+                      CircleAvatar(
+                        radius: MediaQuery.of(context).size.width * 0.35,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.lightBlueAccent,
+                          radius: MediaQuery.of(context).size.width * 0.35,
+                          foregroundImage: NetworkImage(
+                            loginType==true?uController.currUserModel.image:pController.currProviderModel.image,
                           ),
-                          ListTile(
-                            leading: Container(
-                                child: Icon(
-                                  Icons.alternate_email,
-                                  color: Colors.grey,
-                                )),
-                            horizontalTitleGap: 5,
-                            minLeadingWidth: 20,
-                            title: Text(
-                              loginType==true?widget.controllerU.currUserModel.email:widget.controller.currProviderModel.email,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            dense: true,
-                            onTap: (){} ,
-                          ),
-                          ListTile(
-                            leading: Container(
-                                child: Icon(
-                                  Icons.call,
-                                  color: Colors.grey,
-                                )),
-                            horizontalTitleGap: 5,
-                            minLeadingWidth: 20,
-                            title: Text(
-                              loginType==true?widget.controllerU.currUserModel.phone:widget.controller.currProviderModel.phone,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            dense: true,
-                          ),
-                        ],
+                          //backgroundImage: ,
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: Text(
+                          loginType==true?uController.currUserModel.name:pController.currProviderModel.name,
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 80),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Container(
+                                    child: Icon(
+                                      Icons.location_on,
+                                      color: Colors.grey,
+                                    )),
+                                horizontalTitleGap: 5,
+                                minLeadingWidth: 20,
+                                title: Text(
+                                  loginType==true?uController.currUserModel.address:pController.currProviderModel.address,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                dense: true,
+                              ),
+                              ListTile(
+                                leading: Container(
+                                    child: Icon(
+                                      Icons.alternate_email,
+                                      color: Colors.grey,
+                                    )),
+                                horizontalTitleGap: 5,
+                                minLeadingWidth: 20,
+                                title: Text(
+                                  loginType==true?uController.currUserModel.email:pController.currProviderModel.email,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                dense: true,
+                                onTap: (){} ,
+                              ),
+                              ListTile(
+                                leading: Container(
+                                    child: Icon(
+                                      Icons.call,
+                                      color: Colors.grey,
+                                    )),
+                                horizontalTitleGap: 5,
+                                minLeadingWidth: 20,
+                                title: Text(
+                                  loginType==true?uController.currUserModel.phone:pController.currProviderModel.phone,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                dense: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
               );
             },)
         ),

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:service_provider/Controllers/providersController.dart';
 import 'package:service_provider/Pages/selectedServiceInfo.dart';
 import 'package:service_provider/Pages/userHome.dart';
-import 'package:service_provider/providerModel.dart';
+import 'package:service_provider/Models/providerModel.dart';
 List<providerModel> Providers=[];
 bool isLoaded = false;
 int itemsAmount=0;
@@ -80,7 +80,7 @@ class Services extends StatelessWidget {
         return GestureDetector(
           onTap: (){
             controller.selectedSetter(index);
-            Get.to(()=>selectedServiceInfo());
+            Get.to(()=>selectedServiceInfo(),arguments: index);
           },
           child: Container(
             height: 150,

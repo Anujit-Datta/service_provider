@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/Pages/login.dart';
 import 'package:service_provider/Pages/userHome.dart';
-import 'package:service_provider/userModel.dart';
+import 'package:service_provider/Models/userModel.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);

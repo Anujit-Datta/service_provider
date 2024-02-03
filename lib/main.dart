@@ -2,6 +2,7 @@
 import 'package:flutter/services.dart';
   import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:service_provider/Controllers/OrderController.dart';
   import 'package:service_provider/Pages/launcher.dart';
   import 'package:firebase_core/firebase_core.dart';
 import 'Controllers/providersController.dart';
@@ -26,7 +27,8 @@ import 'firebase_options.dart';
 
     @override
     Widget build(BuildContext context) {
-      ProvidersController controller = Get.put(ProvidersController());
+      Get.put(ProvidersController());
+      Get.put(OrderController());
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',

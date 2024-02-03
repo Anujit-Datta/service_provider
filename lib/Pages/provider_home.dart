@@ -1,16 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:service_provider/Controllers/OrderController.dart';
 import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/userHome.dart';
 import '../Controllers/UserController.dart';
 import '../Controllers/providersController.dart';
+import 'History.dart';
 
 List<Widget> pages=[
   profileBody(controllerU: Get.find<UserController>(),controller: Get.find<ProvidersController>(),),
   ProviderHomeBody(controller: Get.find<ProvidersController>()),
-  profileBody(controllerU: Get.find<UserController>(),controller: Get.find<ProvidersController>(),),
-];
+  HistoryBody(monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],),];
 
 class ProviderHomePage extends StatefulWidget {
   const ProviderHomePage({super.key});
@@ -27,6 +28,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   @override
   void initState() {
     controller.getCurrProviderModel();
+    Get.find<OrderController>().getHistory();
     super.initState();
   }
 
@@ -93,73 +95,114 @@ class ProviderHomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height * 0.03,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 20,
-              itemBuilder: (context,index){
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.lightBlueAccent.shade100,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: ListTile(
-                      isThreeLine: true,
-                      leading: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.work_history_outlined),
-                        ],
-                      ),
-                      title: Text('sdvucsd'),
-                      subtitle: Text('sdgv'),
-                      trailing: SizedBox(
-                        width: MediaQuery.sizeOf(context).width*0.4,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              onPressed: (){},
-                              child: Text('Cancel',
-                              style: TextStyle(
-                                color: Colors.red.shade300,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
+    return RefreshIndicator(
+      onRefresh: ()async{
+        Get.find<OrderController>().getHistory();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            SizedBox(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.03,
+            ),
+            Expanded(
+              child: GetBuilder<OrderController>(
+                builder: (oController) {
+                  return Visibility(
+                    visible: oController.requestedOrders.length>0,
+                    replacement: Center(child: Text('No bookings available!'),),
+                    child: ListView.builder(
+                      itemCount: oController.requestedOrders.length,
+                      itemBuilder: (context,index){
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.lightBlueAccent.shade100,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: ListTile(
+                              //isThreeLine: true,
+                              leading: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.work_history_outlined),
+                                ],
                               ),
-                              ),
-                            ),TextButton(
-                              onPressed: (){},
-                              child: Text('Accept',
-                                style: TextStyle(
-                                  color: Colors.green.shade300,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
+                              title: Text(oController.requestedOrders[index].orderSubType),
+                              subtitle: Text(oController.requestedOrders[index].userEmail),
+                              trailing: Visibility(
+                                visible: oController.history[index].orderStatus=='Pending',
+                                replacement: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: getStatusColor(oController.history[index].orderStatus),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                                      child: Text(
+                                        oController.history[index].orderStatus,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                    ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.sizeOf(context).width*0.35,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            onPressed: (){},
+                                            icon: Icon(
+                                              Icons.clear,
+                                              color: Colors.red,
+                                              size: 35,
+                                            )
+                                          ),
+                                          IconButton(
+                                              onPressed: (){},
+                                              icon: Icon(
+                                                Icons.check,
+                                                color: Colors.green.shade400,
+                                                size: 35,
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                );
-              },
+                  );
+                }
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+  getStatusColor(String status) {
+    if(status=='Done'){
+      return Colors.greenAccent[100];
+    }else if(status=='Running'){
+      return Colors.yellow[100];
+    }else if(status=='Cancelled'){
+      return Colors.red[200];
+    }else{
+      return Colors.grey[300];
+    }
   }
 }

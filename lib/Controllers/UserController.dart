@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../Models/userModel.dart';
 
+
 class UserController extends GetxController {
   final _db=FirebaseFirestore.instance;
   String? currUserDoc='';

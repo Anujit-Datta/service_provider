@@ -3,24 +3,29 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/Pages/launcher.dart';
 import '../Models/orderModel.dart';
+import '../Pages/selectedServiceInfo.dart';
 
-class OrderController extends GetxController{
-  final _auth=FirebaseAuth.instance;
-  final _db=FirebaseFirestore.instance;
 
-  List<orderModel> history=[];
-  List<orderModel> requestedOrders=[];
-  Future<void> getHistory() async{
+class OrderController extends GetxController {
+  final _auth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
+
+  List<orderModel> history = [];
+  List<orderModel> requestedOrders = [];
+  Future<void> getHistory() async {
     await _db
         .collection('Orders')
         .orderBy('date_time')
-        .where(loginType==true?'user':'provider', isEqualTo: _auth.currentUser!.email)
-        .get().then((value) {
+        .where(loginType == true ? 'user' : 'provider',
+            isEqualTo: _auth.currentUser!.email)
+        .get()
+        .then((value) {
       history.clear();
       requestedOrders.clear();
       value.docs.forEach((element) {
-        history.insert(0,orderModel.fromMap(element.data()));
-        if(element.data()['status']=='Pending'||element.data()['status']=='Running'){
+        history.insert(0, orderModel.fromMap(element.data()));
+        if (element.data()['status'] == 'Pending' ||
+            element.data()['status'] == 'Running') {
           requestedOrders.add(history[0]);
         }
       });
@@ -32,7 +37,22 @@ class OrderController extends GetxController{
     // var bddb=asdoivbh.docs.map((DocumentSnapshot e) => e.reference).toList();
   }
 
-  postOrder(orderModel order)async{
+  postOrder(orderModel order) async {
     await _db.collection('Orders').add(order.toMap());
+  }
+
+  bool visibility=true;
+  Future<void> bookButtonVisibility() async {
+    await FirebaseFirestore.instance.collection('Orders').get().then((value) {
+      value.docs.forEach((element) {
+        if (element['provider'] ==
+                controller.providers[controller.selectedServiceProvider].email &&
+            (element['status'] == 'Pending' ||
+                element['status'] == 'Running')) {
+          visibility = false;
+          print('booked2');
+        }
+      });
+    });
   }
 }

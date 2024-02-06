@@ -10,6 +10,7 @@ import 'package:service_provider/Pages/services.dart';
 import 'package:service_provider/Pages/userHome.dart';
 ProvidersController controller = Get.find<ProvidersController>();
 
+
 class selectedServiceInfo extends StatefulWidget {
   const selectedServiceInfo({super.key});
 
@@ -18,6 +19,11 @@ class selectedServiceInfo extends StatefulWidget {
 }
 
 class _selectedServiceInfoState extends State<selectedServiceInfo> {
+  @override
+  void initState() {
+    Get.find<OrderController>().bookButtonVisibility();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -43,8 +49,9 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
       ),
       body: Column(
         children: [
-          Container(
-              height: MediaQuery.of(context).size.height * 0.85,
+          Expanded(
+            flex: 8,
+              //height: MediaQuery.of(context).size.height * 0.85,
               child: GetBuilder<ProvidersController>(
                 builder: (_) {
                   return ListView(
@@ -177,48 +184,38 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
                   );
                 },
               )),
-          Visibility(
-            visible: !controller.booked[controller.selectedServiceProvider],
-            child: Container(
-              width: double.maxFinite,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MaterialButton(
-                    onPressed: () {},
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25)),
-                    color: Colors.lightBlueAccent,
-                    child: Text(
-                      'Reviews ',
-                      style: TextStyle(
-                        fontSize: 22,
-                      ),
+          GetBuilder<OrderController>(
+            builder: (oController) {
+              return Visibility(
+                visible: oController.visibility,
+                replacement: Expanded(flex:2,child: SizedBox(height: MediaQuery.of(context).size.height * 0.1,)),
+                child: Expanded(
+                  flex: 2,
+                  child: Container(
+                    // height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MaterialButton(
+                          onPressed: () {},
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          color: Colors.lightBlueAccent,
+                          child: Text(
+                            '  Book  ',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.1,
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      createOrder();
-                      controller.booked[controller.selectedServiceProvider]=true;
-                      setState(() {});
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    color: Colors.lightBlueAccent,
-                    child: Text(
-                      '  Book  ',
-                      style: TextStyle(
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            }
           ),
         ],
       ),

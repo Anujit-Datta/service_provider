@@ -34,6 +34,32 @@ import 'firebase_options.dart';
         title: 'Flutter Demo',
         builder: EasyLoading.init(),
         home: const launcherPage(),
+        theme: ThemeData(
+          buttonTheme: ButtonThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.lightBlueAccent.shade100,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+              borderSide: BorderSide(
+                  color: Colors.black,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(45),
+              borderSide: BorderSide(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
       );
     }
   }

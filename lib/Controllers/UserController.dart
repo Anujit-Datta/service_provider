@@ -5,7 +5,7 @@ import '../Models/userModel.dart';
 
 class UserController extends GetxController {
   final _db=FirebaseFirestore.instance;
-  String? currUserDoc='';
+  String currUserDoc='';
   late userModel currUserModel;
 
   Future getCurrUserModel() async {

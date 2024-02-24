@@ -10,76 +10,81 @@ bool isLoaded = false;
 int itemsAmount=0;
 
 
-class Services extends StatelessWidget {
+class Services extends StatefulWidget {
   const Services({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    ProvidersController controller= Get.find<ProvidersController>();
+  State<Services> createState() => _ServicesState();
+}
 
-    controller.providersInfoGetter().then((value) {
+class _ServicesState extends State<Services> {
+  @override
+  void initState() {
+    Get.find<ProvidersController>().providersInfoGetter().then((value) {
       Providers=[];
-      Providers=controller.providers;
+      Providers=Get.find<ProvidersController>().providers;
     });
-    return GetBuilder<ProvidersController>(builder: (_){
-      return Scaffold(
-        backgroundColor: Colors.grey.shade200,
-        appBar: AppBar(
-          shadowColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              color: Color(0xff4c505b),
-              size: 30,
-            ),
-            onPressed: (){isLoaded=false;Get.back();},
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Color(0xff4c505b),
+            size: 30,
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 1,
-              ),
-              Text(
-                services[controller.currService == -1 ? 0 : controller.currService] + 's',
-                style: TextStyle(
-                  fontSize: 35,
-                  color: Color(0xff4c505b),
-                ),
-              ),
-              SizedBox(
-                width: 50,
-                child: IconButton(
-                  onPressed: () {},
-                  color: Color(0xff4c505b),
-                  icon: Icon(
-                    Icons.edit_location_alt,
-                    size: 30,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          onPressed: (){isLoaded=false;Get.back();},
         ),
-        body: isLoaded == true
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 1,
+            ),
+            Text(
+              services[controller.currService == -1 ? 0 : controller.currService] + 's',
+              style: TextStyle(
+                fontSize: 35,
+                color: Color(0xff4c505b),
+              ),
+            ),
+            SizedBox(
+              width: 50,
+              child: IconButton(
+                onPressed: () {},
+                color: Color(0xff4c505b),
+                icon: Icon(
+                  Icons.edit_location_alt,
+                  size: 30,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: GetBuilder<ProvidersController>(builder: (pController){
+        return isLoaded == true
             ? Providers.length>0? _body(context)
-            : _noDataFound(controller)
-            : _loading(),
-      );
-    },);
+            : _noDataFound(pController)
+            : _loading();
+      },),
+    );
   }
 
    _body(BuildContext context){
-    ProvidersController controller= Get.find<ProvidersController>();
     EasyLoading.dismiss();
-    print(Providers.length.toString()+" "+itemsAmount.toString()+' '+controller.providers.length.toString());
     return ListView.builder(
       itemCount: itemsAmount,
       itemBuilder: (BuildContext, int index) {
         return GestureDetector(
           onTap: (){
-            controller.selectedSetter(index);
+            Get.find<ProvidersController>().selectedSetter(index);
             Get.to(()=>selectedServiceInfo(),arguments: index);
           },
           child: Container(

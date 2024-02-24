@@ -66,6 +66,7 @@ class profileBody extends StatefulWidget {
 }
 
 class _profileBodyState extends State<profileBody> {
+  String profileAvater='https://firebasestorage.googleapis.com/v0/b/service-provider-2798f.appspot.com/o/user-male-circle.png?alt=media&token=f95cd854-6136-4118-94cd-4abfb3f48656';
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -84,7 +85,9 @@ class _profileBodyState extends State<profileBody> {
                           backgroundColor: Colors.lightBlueAccent,
                           radius: MediaQuery.of(context).size.width * 0.35,
                           foregroundImage: NetworkImage(
-                            loginType==true?uController.currUserModel.image:pController.currProviderModel.image,
+                            loginType==true?
+                                uController.currUserModel.image==''?profileAvater:uController.currUserModel.image
+                                :pController.currProviderModel.image==''?profileAvater:pController.currProviderModel.image,
                           ),
                           //backgroundImage: ,
                         ),

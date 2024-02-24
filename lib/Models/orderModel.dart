@@ -9,6 +9,7 @@ class orderModel{
   DateTime orderDateTime;
   String orderType;
   String orderSubType;
+  String? otp;
 
   orderModel({
     required this.userEmail,
@@ -19,6 +20,7 @@ class orderModel{
     required this.orderDateTime,
     required this.orderType,
     required this.orderSubType,
+    this.otp,
   });
 
   Map<String, dynamic> toMap(){
@@ -31,6 +33,7 @@ class orderModel{
       'date_time' : FieldValue.serverTimestamp(),
       'service' : orderType,
       'subType' : orderSubType,
+      'otp' : otp,
     };
     return Map;
   }
@@ -44,6 +47,7 @@ class orderModel{
     orderDateTime: map['date_time'].toDate(),
     orderType: map['service'],
     orderSubType: map['subType'],
+    otp: map['otp'],
   );
 
 

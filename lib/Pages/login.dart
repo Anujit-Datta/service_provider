@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:service_provider/Pages/Register.dart';
 import 'package:service_provider/Pages/forgotpassword.dart';
 import 'package:service_provider/Pages/launcher.dart';
+import 'package:service_provider/Pages/selectedServiceInfo.dart';
 import 'package:service_provider/firebaseHelper.dart';
 import '../Controllers/UserController.dart';
 
@@ -125,13 +126,8 @@ class _LoginPageState extends State<LoginPage> {
         keyboardType: TextInputType.emailAddress,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
-          fillColor: Colors.lightBlueAccent.shade100,
-          filled: true,
           prefixIcon: Icon(Icons.email),
           labelText: 'Email',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -156,11 +152,6 @@ class _LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.key,color: Colors.blueGrey.shade600,),
         labelText: 'Password',
-        fillColor: Colors.lightBlueAccent.shade100,
-        filled: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
       ),
       validator: (value) {
         if(value == null || value.isEmpty) {
@@ -255,5 +246,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

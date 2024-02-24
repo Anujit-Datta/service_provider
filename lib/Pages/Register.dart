@@ -6,6 +6,8 @@ import 'package:service_provider/Pages/login.dart';
 import 'package:service_provider/Pages/userHome.dart';
 import 'package:service_provider/Models/userModel.dart';
 
+import '../Controllers/UserController.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -27,7 +29,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _addressController = TextEditingController();
   FocusNode five=FocusNode();
   final _passwordController = TextEditingController();
+  bool error=false;
   String errorCode= '';
+  bool providerCheckboxChecked=false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
               SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.35),
+                      top: MediaQuery.of(context).size.height * 0.30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -72,7 +76,29 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             passwordField(),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.05,
+                              height: MediaQuery.of(context).size.height * 0.005,
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(
+                                    value: providerCheckboxChecked,
+                                    onChanged: (changedBoolValue){
+                                      setState(() {
+                                        providerCheckboxChecked= changedBoolValue!;
+                                      });
+                                    },
+                                ),
+                                Text(
+                                  'Register as Service Provider?',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: error==false?5:MediaQuery.of(context).size.height * 0.05,
                               child: Text(errorCode,style: TextStyle(fontSize: 17,color: Colors.redAccent),),
                             ),
                             signupButton(),
@@ -140,12 +166,21 @@ class _RegisterPageState extends State<RegisterPage> {
                       image: '',
                   );
                     await _auth
-                        .createUserWithEmailAndPassword(email: user.email, password: _passwordController.text);
+                        .createUserWithEmailAndPassword(email: user.email, password: _passwordController.text).whenComplete(() async {
+                          Get.find<UserController>().currUserModel=user;
+                          Get.find<UserController>().currUserDoc=user.email;
+                          await _auth.signInWithEmailAndPassword(email: user.email, password: _passwordController.text);
+                    });
                     await _db
                         .collection('Users')
                         .doc(user.email)
-                        .set(user.toMap()).onError((errorcode, stackTrace) {setState(() {errorCode=errorcode.toString();});})
-                        .whenComplete(() => Get.to(() =>userHomePage()));
+                        .set(user.toMap()).onError((errorcode , stackTrace) {setState(() {error=false;errorCode=errorcode.toString();});})
+                        .whenComplete(()  {
+                          if(providerCheckboxChecked){
+
+                          }
+                          Get.to(() =>userHomePage());
+                    });
                 }
               },
               icon: Icon(
@@ -163,25 +198,9 @@ class _RegisterPageState extends State<RegisterPage> {
       controller: _passwordController,
       focusNode: five,
       decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.lightBlueAccent.shade100,
           prefixIcon: Icon(Icons.key,color: Colors.blueGrey.shade600,),
           labelText: 'Password',
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.white,
-            ),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.black,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-          )),
       validator: (value) {
         if(value == null || value.isEmpty) {
           return 'Provide a password';
@@ -201,25 +220,9 @@ class _RegisterPageState extends State<RegisterPage> {
       focusNode: four,
       keyboardType: TextInputType.streetAddress,
       decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.lightBlueAccent.shade100,
           prefixIcon: Icon(Icons.location_on),
           labelText: 'Address',
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.white,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.black,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-          )),
+        ),
       validator: (value) {
         if(value == null || value.isEmpty) {
           return 'Provide your address';
@@ -237,25 +240,9 @@ class _RegisterPageState extends State<RegisterPage> {
       focusNode: three,
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.lightBlueAccent.shade100,
           prefixIcon: Icon(Icons.phone),
           labelText: 'Phone',
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.white,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.black,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-          )),
+      ),
       validator: (value) {
         if(value == null || value.isEmpty) {
           return 'Provide your phone number';
@@ -275,25 +262,9 @@ class _RegisterPageState extends State<RegisterPage> {
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.lightBlueAccent.shade100,
-          prefixIcon: Icon(Icons.email),
+        prefixIcon: Icon(Icons.email),
           labelText: 'Email',
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.white,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.black,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-          )),
+        ),
       validator: (value) {
         if(value == null || value.isEmpty) {
           return 'Provide an email address';
@@ -313,25 +284,9 @@ class _RegisterPageState extends State<RegisterPage> {
       focusNode: one,
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.lightBlueAccent.shade100,
           prefixIcon: Icon(Icons.person),
           labelText: 'Username',
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.white,
-            ),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-            borderSide: BorderSide(
-              color: Colors.blueGrey,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(45),
-          )),
       validator: (value) {
         if(value == null || value.isEmpty) {
           return 'Provide your name';

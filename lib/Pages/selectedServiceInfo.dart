@@ -8,7 +8,10 @@ import 'package:service_provider/Models/orderModel.dart';
 import 'package:service_provider/Models/providerModel.dart';
 import 'package:service_provider/Pages/services.dart';
 import 'package:service_provider/Pages/userHome.dart';
+import 'package:service_provider/Widgets/statusColoredContainer.dart';
 ProvidersController controller = Get.find<ProvidersController>();
+UserController controllerU= Get.find<UserController>();
+
 
 
 class selectedServiceInfo extends StatefulWidget {
@@ -19,14 +22,15 @@ class selectedServiceInfo extends StatefulWidget {
 }
 
 class _selectedServiceInfoState extends State<selectedServiceInfo> {
+  bool progressVisibility=true;
   @override
   void initState() {
-    Get.find<OrderController>().bookButtonVisibility();
+    progressVisibility=true;
+    progressVisibilityPause();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -186,32 +190,52 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
               )),
           GetBuilder<OrderController>(
             builder: (oController) {
-              return Visibility(
-                visible: oController.visibility,
-                replacement: Expanded(flex:2,child: SizedBox(height: MediaQuery.of(context).size.height * 0.1,)),
-                child: Expanded(
-                  flex: 2,
-                  child: Container(
-                    // height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        MaterialButton(
-                          onPressed: () {},
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+              return Expanded(
+                flex: 2,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Visibility(
+                        visible: !progressVisibility,
+                        replacement: CircularProgressIndicator(),
+                        child: Visibility(
+                          visible: oController.visibility,
+                          replacement: Column(
+                            children: [
+                              Text(
+                                'Booked',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Status: ',style: TextStyle(fontSize: 20),),
+                                  StatusColoredContainer(status: oController.selectedProviderOrderStatus),
+                                ],
+                              )
+                            ],
                           ),
-                          color: Colors.lightBlueAccent,
-                          child: Text(
-                            '  Book  ',
-                            style: TextStyle(
-                              fontSize: 25,
+                          child: MaterialButton(
+                            onPressed: () {
+                              progressVisibility=true;
+                              setState(() {});
+                              showOrderConfirmDialog(context);
+                            },
+                            color: Colors.lightBlueAccent,
+                            child: Text(
+                              '  Book  ',
+                              style: TextStyle(
+                                fontSize: 25,
+                              ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               );
@@ -222,21 +246,59 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
     );
   }
 
-  void createOrder() {
+  void createOrder() async{
     final _db = FirebaseFirestore.instance;
-    UserController controllerU=Get.find<UserController>();
-    ProvidersController controller=Get.find<ProvidersController>();
     providerModel selectedProvider=controller.providers[Get.arguments];
     orderModel order = orderModel(
         userEmail: controllerU.currUserModel.email,
-        userReference: _db.collection('Users').doc(controllerU.currUserModel.email),
+        userReference: await _db.collection('Users').doc(controllerU.currUserModel.email),
         providerEmail: selectedProvider.email,
-        providerReference: _db.collection(services[controller.selectedServiceProvider]).doc(selectedProvider.email),
+        providerReference: await _db.collection(services[controller.selectedServiceProvider]).doc(selectedProvider.email),
         orderStatus: 'Pending',
         orderDateTime: DateTime.now(),
         orderType: services[controller.selectedServiceProvider],
-        orderSubType: selectedProvider.type);
+        orderSubType: selectedProvider.type,
+        otp: '');
     Get.find<OrderController>().postOrder(order);
+  }
 
+  Future<void> progressVisibilityPause()async{
+    await Get.find<OrderController>().bookButtonVisibility().whenComplete((){
+      progressVisibility=false;
+      setState(() {});
+    });
+  }
+
+  void showOrderConfirmDialog(BuildContext context){
+    showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('Confirm Order?'),
+            content: Text('Once the service provider accepts the order an OTP will be shown to you.'),
+            actions: [
+              MaterialButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  progressVisibility=false;
+                  setState(() {});
+                },
+                child: Text('Cancel'),
+                color: Colors.red.shade200,
+              ),
+              MaterialButton(
+                onPressed: (){
+                  //createOrder();
+                  progressVisibility=false;
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: Text('Confirm'),
+                color: Colors.green.shade200,
+              ),
+            ],
+            alignment: Alignment.center,
+          );
+        });
   }
 }

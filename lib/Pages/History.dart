@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/Controllers/OrderController.dart';
+import 'package:service_provider/Widgets/statusColoredContainer.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
@@ -14,7 +15,6 @@ class _HistoryState extends State<History> {
   @override
   void initState() {
     super.initState();
-    Get.find<OrderController>().getHistory();
   }
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _HistoryState extends State<History> {
       ),
       body: GetBuilder<OrderController>(
         builder: (oController) {
-          return oController.history.length>0?HistoryBody(monthNames: monthNames):Center(child: CircularProgressIndicator());
+          return HistoryBody(monthNames: monthNames);
         }
       ),
     );
@@ -48,7 +48,7 @@ class _HistoryState extends State<History> {
 
 }
 
-class HistoryBody extends StatelessWidget {
+class HistoryBody extends StatefulWidget {
   const HistoryBody({
     super.key,
     required this.monthNames,
@@ -57,9 +57,18 @@ class HistoryBody extends StatelessWidget {
   final List<String> monthNames;
 
   @override
+  State<HistoryBody> createState() => _HistoryBodyState();
+}
+
+class _HistoryBodyState extends State<HistoryBody> {
+  @override
+  void initState() {
+    Get.find<OrderController>().getHistory();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     final OrderController controllerO=Get.find<OrderController>();
-    controllerO.getHistory();
     return RefreshIndicator(
       onRefresh: ()async{
         controllerO.getHistory();
@@ -68,53 +77,46 @@ class HistoryBody extends StatelessWidget {
         padding: EdgeInsets.all(8),
         child: GetBuilder<OrderController>(
           builder: (_) {
-            return ListView.builder(
-              //reverse: true,
-              itemCount: controllerO.history.length,
-              itemBuilder: (context,index){
-                DateTime dateTime=controllerO.history[index].orderDateTime;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.lightBlue[50],
-                      child: Text(
-                        (index+1).toString(),
-                      ),
-                    ),
-                    title: Text(controllerO.history[index].orderType),
-                    subtitle: Text('${dateTime.day} ${monthNames[dateTime.month-1]}, ${dateTime.year};  ${dateTime.hour}:${dateTime.minute}'),
-                    trailing: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: getStatusColor(controllerO.history[index].orderStatus),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                      child: Text(
-                        controllerO.history[index].orderStatus,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ),
+            return Visibility(
+              visible: !controllerO.historyProgressVisibility,
+              replacement: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.lightBlueAccent,
+                ),
+              ),
+              child: Visibility(
+                visible: controllerO.history.length>0,
+                replacement: Center(
+                  child: Text(
+                    'Empty',
                   ),
-                );
-              },
+                ),
+                child: ListView.builder(
+                  //reverse: true,
+                  itemCount: controllerO.history.length,
+                  itemBuilder: (context,index){
+                    DateTime dateTime=controllerO.history[index].orderDateTime;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.lightBlue[50],
+                          child: Text(
+                            (index+1).toString(),
+                          ),
+                        ),
+                        title: Text(controllerO.history[index].orderType),
+                        subtitle: Text('${dateTime.day} ${widget.monthNames[dateTime.month-1]}, ${dateTime.year};  ${dateTime.hour}:${dateTime.minute}'),
+                        trailing: StatusColoredContainer(status: controllerO.history[index].orderStatus),
+                      ),
+                    );
+                  },
+                ),
+              ),
             );
           }
         ),
       ),
     );
-  }
-  getStatusColor(String status) {
-    if(status=='Done'){
-      return Colors.greenAccent[100];
-    }else if(status=='Running'){
-      return Colors.yellow[200];
-    }else if(status=='Cancelled'){
-      return Colors.red[200];
-    }else{
-      return Colors.grey[300];
-    }
   }
 }

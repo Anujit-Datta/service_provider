@@ -10,6 +10,7 @@ class OrderController extends GetxController {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
 
+  bool historyProgressVisibility=true;
   List<orderModel> history = [];
   List<orderModel> requestedOrders = [];
   Future<void> getHistory() async {
@@ -29,6 +30,7 @@ class OrderController extends GetxController {
           requestedOrders.add(history[0]);
         }
       });
+      historyProgressVisibility=false;
       update();
       print('invoked');
     });
@@ -38,21 +40,39 @@ class OrderController extends GetxController {
   }
 
   postOrder(orderModel order) async {
-    await _db.collection('Orders').add(order.toMap());
+    await _db.collection('Orders').add(order.toMap()).whenComplete(() {
+      visibility=false;
+      update();
+    });
   }
 
   bool visibility=true;
+  bool progressVisibility=true;
+  String selectedProviderOrderStatus='';
   Future<void> bookButtonVisibility() async {
-    await FirebaseFirestore.instance.collection('Orders').get().then((value) {
-      value.docs.forEach((element) {
-        if (element['provider'] ==
-                controller.providers[controller.selectedServiceProvider].email &&
-            (element['status'] == 'Pending' ||
+    print('invoked');
+    await FirebaseFirestore.instance.collection('Orders').where('user' ,isEqualTo: controllerU.currUserModel.email ).where('provider',isEqualTo: controller.providers[controller.selectedServiceProvider].email).get().then((value) {
+      bool willBreak=false;
+      if(value.docs.length!=0){
+        value.docs.forEach((element) {
+          if (!willBreak) {
+            if ((element['status'] == 'Pending' ||
                 element['status'] == 'Running')) {
-          visibility = false;
-          print('booked2');
-        }
-      });
+              selectedProviderOrderStatus = element['status'];
+              visibility = false;
+              print('booked2');
+              willBreak = true;
+            } else {
+              visibility = true;
+              print('not booked');
+            }
+          }
+        });
+      }else{
+        visibility = true;
+        print('not booked');
+      }
+      update();
     });
   }
 }

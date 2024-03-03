@@ -3,12 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:service_provider/Controllers/providersController.dart';
 import 'package:service_provider/Pages/Register.dart';
 import 'package:service_provider/Pages/forgotpassword.dart';
 import 'package:service_provider/Pages/launcher.dart';
-import 'package:service_provider/Pages/selectedServiceInfo.dart';
-import 'package:service_provider/firebaseHelper.dart';
+import 'package:service_provider/Services/firebaseHelper.dart';
+import 'package:service_provider/Services/notification_services.dart';
 import '../Controllers/UserController.dart';
+
 
 
 class LoginPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  FirebaseFirestore _db=FirebaseFirestore.instance;
   FocusNode one=FocusNode();
   final _emailController = TextEditingController();
   FocusNode two=FocusNode();
@@ -25,6 +28,17 @@ class _LoginPageState extends State<LoginPage> {
   FocusNode three=FocusNode();
   final _formKey = GlobalKey<FormState>();
   String _errorMsg = '';
+  NotificationServices notificationServices=NotificationServices();
+  late String deviceToken;
+
+  @override
+  void initState() {
+    super.initState();
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseMessagingInit(context);
+    notificationServices.getDeviceToken().then((value) {print(value);deviceToken=value;});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -82,11 +96,12 @@ class _LoginPageState extends State<LoginPage> {
   static final _auth = FirebaseAuth.instance;
 
   void validation() async {
+    ProvidersController pController=Get.find<ProvidersController>();
     EasyLoading.show(status: 'Logging in', dismissOnTap: false);
     try {
       final email = _emailController.text;
       final password = _passwordController.text;
-      var login=await FirebaseFirestore.instance.collection('Users').doc(_emailController.text).get();
+      var login=await _db.collection('Users').doc(_emailController.text).get();
       if(!login.exists){
         loginType=false;
       }else{
@@ -94,6 +109,24 @@ class _LoginPageState extends State<LoginPage> {
       }
       final status = await AuthServices.loginto(email, password);
       if (status) {
+        Future.delayed(Duration.zero,()async {
+          if(loginType==true){
+            if(login.data()!['token']!=deviceToken){
+              await _db.collection('Users').doc(_emailController.text).update({'token':deviceToken});
+            }
+          }else{
+            await _db.collection('providers').doc(_emailController.text).get().then((value) async {
+              var currProvider=value.data();
+              pController.currProviderType=currProvider!['type'];
+              await _db.collection(pController.currProviderType).doc(_emailController.text).get().then((val) async{
+                String currProviderDeviceToken=val.data()!['token'];
+                if(currProviderDeviceToken!=deviceToken){
+                  await _db.collection(pController.currProviderType).doc(_emailController.text).update({'token':deviceToken});
+                }
+              });
+            });
+          }
+        });
         EasyLoading.dismiss();
         Get.to(() =>launcherPage());
       } else {

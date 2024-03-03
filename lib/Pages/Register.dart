@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:service_provider/Pages/login.dart';
 import 'package:service_provider/Pages/userHome.dart';
 import 'package:service_provider/Models/userModel.dart';
+import 'package:service_provider/Services/notification_services.dart';
 
 import '../Controllers/UserController.dart';
 
@@ -32,6 +33,13 @@ class _RegisterPageState extends State<RegisterPage> {
   bool error=false;
   String errorCode= '';
   bool providerCheckboxChecked=false;
+  late String deviceToken;
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationServices().getDeviceToken().then((value) {deviceToken=value;});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       phone: _phoneController.text,
                       address: _addressController.text,
                       image: '',
+                      deviceToken: deviceToken,
                   );
                     await _auth
                         .createUserWithEmailAndPassword(email: user.email, password: _passwordController.text).whenComplete(() async {

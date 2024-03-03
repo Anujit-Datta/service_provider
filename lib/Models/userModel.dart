@@ -3,6 +3,7 @@
   const userEmail = 'email';
   const userAddress = 'address';
   const userImage = 'image';
+  const userDeviceToken = 'token';
 
   class userModel{
     String phone;
@@ -10,6 +11,7 @@
     String email;
     String address;
     String image;
+    String deviceToken;
 
     userModel({
       required this.phone,
@@ -17,6 +19,7 @@
       required this.email,
       required this.address,
       this.image = '',
+      this.deviceToken = '',
     });
 
     Map<String, dynamic> toMap(){
@@ -26,6 +29,7 @@
         userEmail : email,
         userAddress : address,
         userImage : image,
+        userDeviceToken : deviceToken,
       };
       return Map;
     }
@@ -36,5 +40,6 @@
       email: map[userEmail],
       address: map[userAddress],
       image: map[userImage],
+      deviceToken: map[userDeviceToken]??'',
     );
   }

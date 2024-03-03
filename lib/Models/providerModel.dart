@@ -5,6 +5,7 @@ const providerAddress = 'address';
 const providerImage = 'image';
 const providerType = 'type';
 const providerScore='score';
+const providerDeviceToken = 'token';
 
 
 class providerModel{
@@ -15,6 +16,7 @@ class providerModel{
   String phone;
   String type;
   int score;
+  String deviceToken;
 
   providerModel({
     required this.phone,
@@ -24,6 +26,7 @@ class providerModel{
     this.image = '',
     required this.type,
     this.score=0,
+    this.deviceToken='',
   });
 
   Map<String, dynamic> toMap(){
@@ -35,6 +38,7 @@ class providerModel{
       providerImage : image,
       providerType: type,
       providerScore: score,
+      providerDeviceToken: deviceToken,
     };
     return Map;
   }
@@ -46,6 +50,7 @@ class providerModel{
     address: map[providerAddress],
     image: map[providerImage],
     type: map[providerType],
-    score: map[providerScore],
+    score: map[providerScore]??0,
+    deviceToken: map[providerDeviceToken]??'',
   );
 }

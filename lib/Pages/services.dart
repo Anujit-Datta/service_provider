@@ -85,7 +85,8 @@ class _ServicesState extends State<Services> {
         return GestureDetector(
           onTap: (){
             Get.find<ProvidersController>().selectedSetter(index);
-            Get.to(()=>selectedServiceInfo(),arguments: index);
+            Get.to(()=>selectedServiceInfo());
+            print(Providers[index].name);
           },
           child: Container(
             height: 150,

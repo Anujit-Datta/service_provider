@@ -11,10 +11,12 @@ class ProvidersController extends GetxController{
 
   late providerModel currProviderModel;
   late String currProviderDoc;
+  String currProviderType='';
   Future getCurrProviderModel() async{
     currProviderDoc=await _auth.currentUser!.email!;
     await _db.collection('providers').doc(currProviderDoc).get().then((value){
-      getCurrProviderModelAssist(value.data()!['type']);
+      currProviderType=value.data()!['type'];
+      getCurrProviderModelAssist(currProviderType);
     });
   }
   Future getCurrProviderModelAssist(String currProviderCollection) async {

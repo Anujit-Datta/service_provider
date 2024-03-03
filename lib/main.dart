@@ -1,4 +1,5 @@
-  import 'package:flutter/material.dart';
+  import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
   import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,10 @@ import 'firebase_options.dart';
 
   void main() async {
     WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundNotificationHandler);
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.immersiveSticky,
     );
@@ -17,11 +22,14 @@ import 'firebase_options.dart';
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
     runApp(const MyApp());
   }
+
+  @pragma('vm:entry-point')
+  Future<void> _firebaseBackgroundNotificationHandler(RemoteMessage message)async{
+    await Firebase.initializeApp();
+  }
+
   class MyApp extends StatelessWidget {
     const MyApp({super.key});
 
@@ -43,6 +51,7 @@ import 'firebase_options.dart';
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
             fillColor: Colors.lightBlueAccent.shade100,
+
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(45),
             ),
@@ -59,6 +68,16 @@ import 'firebase_options.dart';
               ),
             ),
           ),
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            selectedItemColor: Colors.lightBlueAccent,
+            selectedIconTheme: IconThemeData(
+              size: 30,
+            ),
+            unselectedItemColor: Colors.grey,
+            unselectedIconTheme: IconThemeData(
+              size: 20,
+            )
+          )
         ),
       );
     }

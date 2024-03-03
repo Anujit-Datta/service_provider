@@ -9,6 +9,7 @@ import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/services.dart';
 import 'package:service_provider/Models/userModel.dart';
 import 'package:get/get.dart';
+import '../Controllers/OrderController.dart';
 import 'Contact.dart';
 import 'launcher.dart';
 
@@ -40,6 +41,7 @@ class _userHomePageState extends State<userHomePage> {
   @override
   void initState() {
     Get.find<UserController>().getCurrUserModel();
+    Get.find<OrderController>().historyProgressVisibilitySetter(true);
     super.initState();
   }
   @override
@@ -81,12 +83,9 @@ class _userHomePageState extends State<userHomePage> {
             ),
             SizedBox(
               width: 50,
-              child: IconButton(
-                onPressed: () {},
-                color: Color(0xff4c505b),
-                icon: Icon(
-                  Icons.edit_location_alt,
-                ),
+              child: Icon(
+                Icons.add,
+                color: Colors.transparent,
               ),
             )
           ],
@@ -100,10 +99,10 @@ class _userHomePageState extends State<userHomePage> {
       return BottomNavigationBar(
         onTap: (index) {
           controllerU.bottomNevBarItemSetter(index);
-          pages[index];
           setState(() {});
         },
         currentIndex: controllerU.bottomNevBarItemSelected,
+
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

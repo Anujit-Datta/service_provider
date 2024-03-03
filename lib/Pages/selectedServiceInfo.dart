@@ -247,19 +247,19 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
   }
 
   void createOrder() async{
-    final _db = FirebaseFirestore.instance;
-    providerModel selectedProvider=controller.providers[Get.arguments];
+    providerModel selectedProvider=controller.providers[controller.selectedServiceProvider];
     orderModel order = orderModel(
         userEmail: controllerU.currUserModel.email,
-        userReference: await _db.collection('Users').doc(controllerU.currUserModel.email),
         providerEmail: selectedProvider.email,
-        providerReference: await _db.collection(services[controller.selectedServiceProvider]).doc(selectedProvider.email),
         orderStatus: 'Pending',
         orderDateTime: DateTime.now(),
         orderType: services[controller.selectedServiceProvider],
         orderSubType: selectedProvider.type,
         otp: '');
-    Get.find<OrderController>().postOrder(order);
+    await Get.find<OrderController>().postOrder(order).whenComplete(() async{
+      await Get.find<OrderController>().orderPlacingNotifier(order,selectedProvider);
+    });
+
   }
 
   Future<void> progressVisibilityPause()async{
@@ -288,7 +288,7 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
               ),
               MaterialButton(
                 onPressed: (){
-                  //createOrder();
+                  createOrder();
                   progressVisibility=false;
                   setState(() {});
                   Navigator.pop(context);
@@ -297,6 +297,7 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
                 color: Colors.green.shade200,
               ),
             ],
+            actionsAlignment: MainAxisAlignment.spaceAround,
             alignment: Alignment.center,
           );
         });

@@ -6,7 +6,7 @@ import 'package:service_provider/Controllers/UserController.dart';
 import 'package:service_provider/Pages/login.dart';
 import 'package:service_provider/Pages/provider_home.dart';
 import 'package:service_provider/Pages/userHome.dart';
-import 'package:service_provider/firebaseHelper.dart';
+import 'package:service_provider/Services/firebaseHelper.dart';
 late bool loginType;
 
 class launcherPage extends StatefulWidget {
@@ -17,9 +17,9 @@ class launcherPage extends StatefulWidget {
 }
 
 class _launcherPageState extends State<launcherPage> {
+  UserController controllerU=Get.put(UserController());
   @override
   Widget build(BuildContext context) {
-    UserController controllerU=Get.put(UserController());
     Future.delayed(Duration.zero, ()async{
       if(AuthServices.currentUser != null){
         controllerU.currUserDoc=AuthServices.currentUser!.email.toString();

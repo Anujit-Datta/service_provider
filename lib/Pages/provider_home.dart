@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider/Controllers/OrderController.dart';
 import 'package:service_provider/Pages/activeOrders.dart';
-import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/userHome.dart';
 import '../Controllers/UserController.dart';
 import '../Controllers/providersController.dart';

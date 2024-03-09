@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as g;
-
 class orderModel{
   String userEmail;
   String providerEmail;

@@ -1,5 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as cf;
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/Controllers/OrderController.dart';
 import 'package:service_provider/Controllers/UserController.dart';
@@ -7,7 +9,6 @@ import 'package:service_provider/Controllers/providersController.dart';
 import 'package:service_provider/Models/orderModel.dart';
 import 'package:service_provider/Models/providerModel.dart';
 import 'package:service_provider/Pages/services.dart';
-import 'package:service_provider/Pages/userHome.dart';
 import 'package:service_provider/Widgets/statusColoredContainer.dart';
 ProvidersController controller = Get.find<ProvidersController>();
 UserController controllerU= Get.find<UserController>();
@@ -109,10 +110,13 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
                                 horizontalTitleGap: 5,
                                 minLeadingWidth: 20,
                                 title: Text(
-                                  controller
-                                      .providers[
-                                          controller.selectedServiceProvider]
-                                      .type,
+                                  'Expertise: ${
+                                    controller
+                                        .providers[
+                                            controller.selectedServiceProvider]
+                                        .subTypes
+                                        .toString()
+                                  }',
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                     fontSize: 18,
@@ -220,10 +224,24 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
                             ],
                           ),
                           child: MaterialButton(
-                            onPressed: () {
+                            onPressed: () async{
                               progressVisibility=true;
                               setState(() {});
-                              showOrderConfirmDialog(context);
+                              await showSimplePickerLocation(
+                                context: context,
+                                isDismissible: true,
+                                title: 'Pick booking location',
+                                textConfirmPicker: 'Pick',
+                                textCancelPicker: 'Cancel',
+                                initPosition: GeoPoint(latitude: 23.597228, longitude: 89.854139),
+                                zoomOption: ZoomOption(initZoom: 15),
+                              ).onError((error, stackTrace) {
+                                EasyLoading.showToast(error.toString());
+                                return null;
+                              }).then((value) {
+                                showOrderConfirmDialog(context,value!);
+                              });
+
                             },
                             color: Colors.lightBlueAccent,
                             child: Text(
@@ -246,18 +264,22 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
     );
   }
 
-  void createOrder() async{
+  void createOrder(GeoPoint geopoint) async{
     providerModel selectedProvider=controller.providers[controller.selectedServiceProvider];
+    OrderController oController=Get.find<OrderController>();
     orderModel order = orderModel(
         userEmail: controllerU.currUserModel.email,
         providerEmail: selectedProvider.email,
+        orderLocation: controllerU.currUserModel.address,
+        orderGeopoint: cf.GeoPoint(geopoint.latitude,geopoint.longitude),
         orderStatus: 'Pending',
         orderDateTime: DateTime.now(),
-        orderType: services[controller.selectedServiceProvider],
-        orderSubType: selectedProvider.type,
+        orderType: selectedProvider.type,
+        orderSubType: selectedProvider.subTypes[0]==''?selectedProvider.type:selectedProvider.subTypes[0],
         otp: '');
-    await Get.find<OrderController>().postOrder(order).whenComplete(() async{
-      await Get.find<OrderController>().orderPlacingNotifier(order,selectedProvider);
+    await oController.postOrder(order).whenComplete(() async{
+      await oController.bookButtonVisibility();
+      await oController.orderPlacingNotifier(order,selectedProvider);
     });
 
   }
@@ -269,7 +291,7 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
     });
   }
 
-  void showOrderConfirmDialog(BuildContext context){
+  void showOrderConfirmDialog(BuildContext context,GeoPoint geopoint){
     showDialog(
         context: context,
         builder: (context){
@@ -288,7 +310,7 @@ class _selectedServiceInfoState extends State<selectedServiceInfo> {
               ),
               MaterialButton(
                 onPressed: (){
-                  createOrder();
+                  createOrder(geopoint);
                   progressVisibility=false;
                   setState(() {});
                   Navigator.pop(context);

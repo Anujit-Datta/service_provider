@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/Pages/login.dart';
 import 'package:service_provider/Pages/userHome.dart';
@@ -166,11 +167,15 @@ class _RegisterPageState extends State<RegisterPage> {
               color: Colors.white,
               onPressed: () async{
                 if (_formKey.currentState!.validate()){
+                  EasyLoading.show(
+                    dismissOnTap: false,
+                    status: 'Signing Up',
+                  );
                   final user= userModel(
-                      name: _nameController.text,
-                      email: _emailController.text,
-                      phone: _phoneController.text,
-                      address: _addressController.text,
+                      name: _nameController.text.trim(),
+                      email: _emailController.text.trim(),
+                      phone: _phoneController.text.trim(),
+                      address: _addressController.text.trim(),
                       image: '',
                       deviceToken: deviceToken,
                   );
@@ -188,8 +193,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           if(providerCheckboxChecked){
 
                           }
+                          EasyLoading.dismiss(animation: true);
                           Get.to(() =>userHomePage());
                     });
+                  EasyLoading.dismiss(animation: true);
                 }
               },
               icon: Icon(
@@ -211,14 +218,14 @@ class _RegisterPageState extends State<RegisterPage> {
           labelText: 'Password',
           ),
       validator: (value) {
-        if(value == null || value.isEmpty) {
+        if(value == null || value.trim().isEmpty) {
           return 'Provide a password';
-        }else if(value.length<6){
+        }else if(value.trim().length<6){
           return 'Minimum 6 characters';
         }
         return null;
       },
-      onFieldSubmitted: (value){_formKey.currentState!.validate();_formKey.currentState!.validate();},
+      onFieldSubmitted: (value){_formKey.currentState!.validate();},
     );
   }
 
@@ -233,7 +240,7 @@ class _RegisterPageState extends State<RegisterPage> {
           labelText: 'Address',
         ),
       validator: (value) {
-        if(value == null || value.isEmpty) {
+        if(value == null || value.trim().isEmpty) {
           return 'Provide your address';
         }
         return null;
@@ -253,9 +260,9 @@ class _RegisterPageState extends State<RegisterPage> {
           labelText: 'Phone',
       ),
       validator: (value) {
-        if(value == null || value.isEmpty) {
+        if(value == null || value.trim().isEmpty) {
           return 'Provide your phone number';
-        }else if(!RegExp(r"^(?:[+0][1-9])?[0-9]{9}$").hasMatch(value)){
+        }else if(!RegExp(r"^(?:[+0][1-9])?[0-9]{9}$").hasMatch(value.trim())){
           return 'Invalid phone number';
         }
         return null;
@@ -275,9 +282,9 @@ class _RegisterPageState extends State<RegisterPage> {
           labelText: 'Email',
         ),
       validator: (value) {
-        if(value == null || value.isEmpty) {
+        if(value == null || value.trim().isEmpty) {
           return 'Provide an email address';
-        }else if(!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)){
+        }else if(!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value.trim())){
           return 'Invalid email address';
         }
         return null;
@@ -297,7 +304,7 @@ class _RegisterPageState extends State<RegisterPage> {
           labelText: 'Username',
           ),
       validator: (value) {
-        if(value == null || value.isEmpty) {
+        if(value == null || value.trim().isEmpty) {
           return 'Provide your name';
         }
         return null;

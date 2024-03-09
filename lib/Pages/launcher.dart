@@ -29,11 +29,11 @@ class _launcherPageState extends State<launcherPage> {
           }else{
             loginType=true;
           }
-          Get.to(() =>loginType?userHomePage():ProviderHomePage());
+          Get.offAll(() =>loginType?userHomePage():ProviderHomePage());
         });
 
       }else{
-        Get.to(() =>LoginPage());
+        Get.offAll(() =>LoginPage());
       }
     });
     return const Center(

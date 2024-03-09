@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:service_provider/Controllers/OrderController.dart';
+import 'package:service_provider/Pages/activeOrders.dart';
 import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/userHome.dart';
 import '../Controllers/UserController.dart';
@@ -9,7 +11,7 @@ import '../Controllers/providersController.dart';
 import 'History.dart';
 
 List<Widget> pages=[
-  profileBody(controllerU: Get.find<UserController>(),controller: Get.find<ProvidersController>(),),
+  ActiveOrdersBody(),
   ProviderHomeBody(controller: Get.find<ProvidersController>()),
   HistoryBody(monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],),];
 
@@ -22,13 +24,14 @@ class ProviderHomePage extends StatefulWidget {
 
 class _ProviderHomePageState extends State<ProviderHomePage> {
   final _auth = FirebaseAuth.instance;
-  List pagesName = ['Profile', 'Sessions', 'History'];
+  List pagesName = ['Active Orders', 'Jobs', 'History'];
   ProvidersController controller = Get.find<ProvidersController>();
 
   @override
   void initState() {
     controller.getCurrProviderModel();
     Get.find<OrderController>().getHistory();
+    Get.find<OrderController>().getActiveOrders();
     super.initState();
   }
 
@@ -71,8 +74,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             currentIndex: controller.bottomNevBarItemSelected,
             items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
+                icon: Icon(Icons.work_history_outlined),
+                label: 'Orders',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -122,7 +125,7 @@ class ProviderHomeBody extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.lightBlueAccent.shade100,
+                              color: Colors.lightBlue.shade100,
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: ListTile(
@@ -134,17 +137,19 @@ class ProviderHomeBody extends StatelessWidget {
                                 ],
                               ),
                               title: Text(oController.requestedOrders[index].orderSubType),
-                              subtitle: Text(oController.requestedOrders[index].userEmail),
+                              subtitle: Text(
+                                  '${oController.requestedOrders[index].orderLocation}\n${DateFormat.yMMMMEEEEd().format(oController.requestedOrders[index].orderDateTime)}\n${DateFormat.jms().format(oController.requestedOrders[index].orderDateTime)}'
+                              ),
                               trailing: Visibility(
-                                visible: oController.history[index].orderStatus=='Pending',
+                                visible: oController.requestedOrders[index].orderStatus=='Pending',
                                 replacement: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
-                                        color: getStatusColor(oController.history[index].orderStatus),
+                                        color: getStatusColor(oController.requestedOrders[index].orderStatus),
                                       ),
                                       padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
                                       child: Text(
-                                        oController.history[index].orderStatus,
+                                        oController.requestedOrders[index].orderStatus,
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold
                                         ),
@@ -159,7 +164,9 @@ class ProviderHomeBody extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           IconButton(
-                                            onPressed: (){},
+                                            onPressed: (){
+                                              oController.orderCancel(oController.requestedOrders[index]);
+                                            },
                                             icon: Icon(
                                               Icons.clear,
                                               color: Colors.red,
@@ -167,7 +174,9 @@ class ProviderHomeBody extends StatelessWidget {
                                             )
                                           ),
                                           IconButton(
-                                              onPressed: (){},
+                                              onPressed: (){
+                                                oController.orderAccept(oController.requestedOrders[index]);
+                                              },
                                               icon: Icon(
                                                 Icons.check,
                                                 color: Colors.green.shade400,

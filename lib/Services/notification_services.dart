@@ -1,8 +1,9 @@
 import 'dart:convert';
-
+import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:service_provider/Controllers/OrderController.dart';
 
 class NotificationServices {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -44,14 +45,21 @@ class NotificationServices {
       iOS: iosInitializationSettings,
     );
     await _flutterLocalNotificationsPlugin.initialize(initializationSetting,
+        onDidReceiveBackgroundNotificationResponse: (payload){
+          showNotification(message);
+        },
         onDidReceiveNotificationResponse: (payload) {
-      print(payload.toString());
-        });
+           showNotification(message);
+           print(payload.toString());
+          }
+        );
   }
 
   void firebaseMessagingInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((message) {
         initLocalNotifications(context, message);
+        Get.find<OrderController>().getHistory();
+        Get.find<OrderController>().getActiveOrders();
         showNotification(message);
     });
   }
@@ -60,19 +68,20 @@ class NotificationServices {
     AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel',
       'Important',
-
       importance: Importance.max,
+      description: 'channel description',
       groupId: 'main',
     );
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
       channel.id.toString(),
       channel.name.toString(),
-      channelDescription: 'channel description',
+      channelDescription: channel.description,
       importance: Importance.max,
       priority: Priority.max,
+      icon: '@mipmap/ic_launcher',
       ticker: 'ticker',
-          icon: '@mipmap/ic_launcher',
+          // icon: '@mipmap/ic_launcher',
     );
     const DarwinNotificationDetails darwinNotificationDetails =
         DarwinNotificationDetails(
@@ -92,7 +101,6 @@ class NotificationServices {
           message.notification!.title.toString(),
           message.notification!.body.toString(),
           notificationDetails,
-        payload: jsonEncode(message.toMap()),
       );
     });
   }

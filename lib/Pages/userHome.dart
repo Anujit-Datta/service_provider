@@ -5,6 +5,7 @@ import 'package:service_provider/Controllers/UserController.dart';
 import 'package:service_provider/Controllers/providersController.dart';
 import 'package:service_provider/Pages/About.dart';
 import 'package:service_provider/Pages/History.dart';
+import 'package:service_provider/Pages/activeOrders.dart';
 import 'package:service_provider/Pages/profile.dart';
 import 'package:service_provider/Pages/services.dart';
 import 'package:service_provider/Models/userModel.dart';
@@ -23,11 +24,11 @@ List servicesImage = [
 ];
 
 List<Widget> pages=[
-  profileBody(controllerU: Get.find<UserController>(),controller: Get.find<ProvidersController>(),),
+  ActiveOrdersBody(),
   userHomeBody(controller: Get.find<ProvidersController>()),
   HistoryBody(monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],),
 ];
-List pagesName=['Profile','Services','History'];
+List pagesName=['Active Orders','Services','History'];
 
 
 class userHomePage extends StatefulWidget {
@@ -105,8 +106,8 @@ class _userHomePageState extends State<userHomePage> {
 
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
+              icon: Icon(Icons.work_history_outlined),
+              label: 'Orders',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.home),

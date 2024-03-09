@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:service_provider/Controllers/OrderController.dart';
 import 'package:service_provider/Widgets/statusColoredContainer.dart';
 
@@ -86,9 +87,14 @@ class _HistoryBodyState extends State<HistoryBody> {
               ),
               child: Visibility(
                 visible: controllerO.history.length>0,
-                replacement: Center(
-                  child: Text(
-                    'Empty',
+                replacement: RefreshIndicator(
+                  onRefresh: ()async{
+                    controllerO.getHistory();
+                  },
+                  child: Center(
+                    child: Text(
+                      'Empty',
+                    ),
                   ),
                 ),
                 child: ListView.builder(
@@ -106,7 +112,7 @@ class _HistoryBodyState extends State<HistoryBody> {
                           ),
                         ),
                         title: Text(controllerO.history[index].orderType),
-                        subtitle: Text('${dateTime.day} ${widget.monthNames[dateTime.month-1]}, ${dateTime.year};  ${dateTime.hour}:${dateTime.minute}'),
+                        subtitle: Text('${DateFormat.yMMMMEEEEd().format(dateTime)}\n${DateFormat.jms().format(dateTime)}'),
                         trailing: StatusColoredContainer(status: controllerO.history[index].orderStatus),
                       ),
                     );

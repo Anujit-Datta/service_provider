@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:image_picker/image_picker.dart';
@@ -59,60 +60,92 @@ class _EditProfileState extends State<EditProfile> {
         actions: <Widget>[
           IconButton(
               onPressed: ()async{
-                if(_imageFile!=null){
-                  if (profileModel.image != '') {
-                    final deleteRef = await FirebaseStorage.instance
-                        .refFromURL(profileModel.image);
-                    deleteRef.delete();
-                  }
-                  String imageName =
-                      profileModel.email + basename(_imageFile!.path);
-                  final ref = await FirebaseStorage.instance.ref();
-                  final replacementRef = await ref.child(imageName);
-                  try {
-                    await replacementRef.putFile(File(_imageFile!.path),
-                        SettableMetadata(contentType: 'image/jpeg'));
-                  } on FirebaseException catch (e) {
-                    print(e);
-                  }
-                  await replacementRef.getDownloadURL().then((value) async {
+                try{
+                  if (_imageFile != null) {
+                    EasyLoading.show(status: 'Saving.');
+                    if (profileModel.image != '') {
+                      final deleteRef = await FirebaseStorage.instance
+                          .refFromURL(profileModel.image);
+                      deleteRef.delete();
+                    }
+                    String imageName =
+                        profileModel.email + basename(_imageFile!.path);
+                    final ref = await FirebaseStorage.instance.ref();
+                    final replacementRef = await ref.child(imageName);
+                    try {
+                      await replacementRef.putFile(File(_imageFile!.path),
+                          SettableMetadata(contentType: 'image/jpeg'));
+                    } on FirebaseException catch (e) {
+                      EasyLoading.showToast(e.toString(),toastPosition: EasyLoadingToastPosition.bottom);
+                    }
+                    await replacementRef.getDownloadURL().then((value) async {
+                      if (loginType == true) {
+                        await FirebaseFirestore.instance
+                            .collection('Users')
+                            .doc(profileModel.email)
+                            .update({
+                          'image': value,
+                          'name': editedName,
+                          'phone': editedPhone,
+                          'address': editedAddress
+                        }).then((value) {
+                          EasyLoading.dismiss();
+                          EasyLoading.showToast('Update Success',toastPosition: EasyLoadingToastPosition.bottom);
+                          Get.back();
+                        });
+                      } else {
+                        await FirebaseFirestore.instance
+                            .collection(controller.currProviderType)
+                            .doc(profileModel.email)
+                            .update({
+                          'image': value,
+                          'name': editedName,
+                          'phone': editedPhone,
+                          'address': editedAddress
+                        }).then((value) {
+                          EasyLoading.dismiss();
+                          EasyLoading.showToast('Update Success',toastPosition: EasyLoadingToastPosition.bottom);
+                          Get.back();
+                        });
+                      }
+                    });
+                  } else {
+                    EasyLoading.show(status: 'Saving.');
                     if (loginType == true) {
                       await FirebaseFirestore.instance
                           .collection('Users')
                           .doc(profileModel.email)
-                          .update({'image': value,'name':editedName,'phone':editedPhone,'address':editedAddress}).then((value) {
+                          .update({
+                        'name': editedName,
+                        'phone': editedPhone,
+                        'address': editedAddress
+                      }).then((value) {
+                        EasyLoading.dismiss();
+                        EasyLoading.showToast('Update Success',toastPosition: EasyLoadingToastPosition.bottom);
                         Get.back();
                       });
                     } else {
                       await FirebaseFirestore.instance
                           .collection(controller.currProviderType)
                           .doc(profileModel.email)
-                          .update({'image': value,'name':editedName,'phone':editedPhone,'address':editedAddress}).then((value) {
+                          .update({
+                        'name': editedName,
+                        'phone': editedPhone,
+                        'address': editedAddress
+                      }).then((value) {
+                        EasyLoading.dismiss();
+                        EasyLoading.showToast('Update Success',toastPosition: EasyLoadingToastPosition.bottom);
                         Get.back();
                       });
                     }
-                  });
-                }else{
-                  if (loginType == true) {
-                    await FirebaseFirestore.instance
-                        .collection('Users')
-                        .doc(profileModel.email)
-                        .update({'name':editedName,'phone':editedPhone,'address':editedAddress}).then((value) {
-                      Get.back();
-                    });
-                  } else {
-                    await FirebaseFirestore.instance
-                        .collection(controller.currProviderType)
-                        .doc(profileModel.email)
-                        .update({'name':editedName,'phone':editedPhone,'address':editedAddress}).then((value) {
-                      Get.back();
-                    });
                   }
-                }
-                if(loginType==true){
-                  controllerU.getCurrUserModel();
-                }else{
-                  controller.getCurrProviderModel();
+                  if (loginType == true) {
+                    controllerU.getCurrUserModel();
+                  } else {
+                    controller.getCurrProviderModel();
+                  }
+                }catch(exception){
+                  EasyLoading.showToast(exception.toString(),toastPosition: EasyLoadingToastPosition.bottom);
                 }
               },
               icon: Icon(Icons.save,size: 30,)

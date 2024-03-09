@@ -113,7 +113,7 @@ class _ServicesState extends State<Services> {
                     flex: MediaQuery.of(context).orientation==Orientation.portrait?2:5,
                     child: ListTile(
                       title: Padding(
-                        padding: const EdgeInsets.only(left: 5,bottom: 12,top: 10),
+                        padding: const EdgeInsets.only(left: 5,bottom: 6,top: 10),
                         child: Text(
                           Providers[index].name,
                           style: TextStyle(
@@ -128,13 +128,13 @@ class _ServicesState extends State<Services> {
                           Row(
                             children: [
                               Icon(
-                                Icons.label_important_outlined,
+                                Icons.location_on,
                                 size: 20,
                               ),
                               Text(
-                                Providers[index].type,
+                                Providers[index].address,
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 18,
                                 ),
                               )
                             ],
@@ -142,11 +142,11 @@ class _ServicesState extends State<Services> {
                           Row(
                             children: [
                               Icon(
-                                Icons.location_on,
+                                Icons.label_important_outlined,
                                 size: 20,
                               ),
                               Text(
-                                Providers[index].address,
+                                Providers[index].type,
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),

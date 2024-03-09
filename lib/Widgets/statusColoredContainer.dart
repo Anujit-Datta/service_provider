@@ -26,6 +26,8 @@ class StatusColoredContainer extends StatelessWidget {
       return Colors.yellow[200];
     }else if(status=='Cancelled'){
       return Colors.red[200];
+    }else if(status=='Started'){
+      return Colors.green[100];
     }else{
       return Colors.grey[300];
     }

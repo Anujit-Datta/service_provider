@@ -4,6 +4,7 @@ const providerEmail = 'email';
 const providerAddress = 'address';
 const providerImage = 'image';
 const providerType = 'type';
+const providerSubTypes = 'subTypes';
 const providerScore='score';
 const providerDeviceToken = 'token';
 
@@ -15,6 +16,7 @@ class providerModel{
   String name;
   String phone;
   String type;
+  List subTypes;
   int score;
   String deviceToken;
 
@@ -25,6 +27,7 @@ class providerModel{
     required this.address,
     this.image = '',
     required this.type,
+    required this.subTypes,
     this.score=0,
     this.deviceToken='',
   });
@@ -36,7 +39,8 @@ class providerModel{
       providerEmail : email,
       providerAddress : address,
       providerImage : image,
-      providerType: type,
+      providerType : type,
+      providerSubTypes: subTypes,
       providerScore: score,
       providerDeviceToken: deviceToken,
     };
@@ -50,6 +54,7 @@ class providerModel{
     address: map[providerAddress],
     image: map[providerImage],
     type: map[providerType],
+    subTypes: map[providerSubTypes]??[],
     score: map[providerScore]??0,
     deviceToken: map[providerDeviceToken]??'',
   );

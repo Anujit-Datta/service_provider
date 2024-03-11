@@ -248,51 +248,69 @@ class _OrderInfoState extends State<OrderInfo> {
                     ),
                   ),
                 ),
-                Stepper(
-                  currentStep: currStep,
-                  steps: orderSteps,
-                  onStepTapped: (int stepNo){
-                    setState(() {
-                        currStep=stepNo;
-                    });
-                  },
-                  onStepContinue: ()async{
-                    EasyLoading.show(status: 'Updating');
-                    if(order.orderStatus=='Running' && loginType){
-                      await _db
-                          .collection('Orders')
-                          .where('user',isEqualTo: order.userEmail)
-                          .where('provider',isEqualTo: order.providerEmail)
-                          .where('status',isEqualTo: 'Running').get().then((value) async{
-                        await _db.collection('Orders').doc(value.docs[0].id).update({'status':'Started','start_time':FieldValue.serverTimestamp()}).whenComplete(() {
-                          order.orderStatus='Started';
-                          order.startingDateTime=DateTime.now();
-                          startStepVisible=false;
-                          currStep=3;
-                          EasyLoading.dismiss();
-                          EasyLoading.showToast('Started');
-                          setState(() {});
-                        });
+                Visibility(
+                  visible: order.orderStatus!='Done',
+                  replacement: Center(
+                    child: Text(
+                      'Order Complete\nFees:${order.fee}',
+                      style: TextStyle(
+                        fontSize: 30,
+                      ),
+                    ),
+                  ),
+                  child: Stepper(
+                    currentStep: currStep,
+                    steps: orderSteps,
+                    onStepTapped: (int stepNo){
+                      setState(() {
+                          currStep=stepNo;
                       });
-                    }else if(order.orderStatus=='Started' && !loginType){
-                      await _db
-                          .collection('Orders')
-                          .where('user',isEqualTo: order.userEmail)
-                          .where('provider',isEqualTo: order.providerEmail)
-                          .where('status',isEqualTo: 'Started').get().then((value) async{
-                        await _db.collection('Orders').doc(value.docs[0].id).update({'status':'Done'}).whenComplete(() {
-                          order.orderStatus='Done';
-                          order.endingDateTime=DateTime.now();
-                          completeStepVisible=false;
-                          EasyLoading.dismiss();
-                          EasyLoading.showToast('Completed');
-                          setState(() {});
+                    },
+                    onStepContinue: ()async{
+                      EasyLoading.show(status: 'Updating');
+                      if(order.orderStatus=='Running' && loginType){
+                        await _db
+                            .collection('Orders')
+                            .where('user',isEqualTo: order.userEmail)
+                            .where('provider',isEqualTo: order.providerEmail)
+                            .where('status',isEqualTo: 'Running').get().then((value) async{
+                          await _db.collection('Orders').doc(value.docs[0].id).update({'status':'Started','start_time':FieldValue.serverTimestamp()}).whenComplete(() {
+                            order.orderStatus='Started';
+                            order.startingDateTime=DateTime.now();
+                            startStepVisible=false;
+                            currStep=3;
+                            EasyLoading.dismiss();
+                            EasyLoading.showToast('Started');
+                            setState(() {});
+                          });
                         });
-                      });
-                    }else if(currStep==3 && loginType){
-                      EasyLoading.showToast('Provider will end order. Not you.');
-                    }
-                  },
+                      }else if(order.orderStatus=='Started' && !loginType){
+                        await _db
+                            .collection('Orders')
+                            .where('user',isEqualTo: order.userEmail)
+                            .where('provider',isEqualTo: order.providerEmail)
+                            .where('status',isEqualTo: 'Started').get().then((value) async{
+                          int bonus=oController.orderProvider.score~/10;
+                          Duration duration=DateTime.now().difference(order.startingDateTime!);
+                          duration.inHours==0?duration=1.hours:duration.inHours;
+                          await _db.collection('Orders').doc(value.docs[0].id).update({'status':'Done','fee':(100+(10*bonus))*duration.inHours,'end_time':FieldValue.serverTimestamp()}).whenComplete(() async{
+                            await _db.collection(oController.orderProvider.service).doc(oController.orderProvider.email).update({'score': oController.orderProvider.score + 1}).whenComplete(() {
+                              oController.orderProvider.score+=1;
+                            });
+                            order.orderStatus='Done';
+                            order.endingDateTime=DateTime.now();
+                            order.fee=100+(10*bonus)*duration.inHours;
+                            completeStepVisible=false;
+                            EasyLoading.dismiss();
+                            EasyLoading.showToast('Completed');
+                            setState(() {});
+                          });
+                        });
+                      }else if(currStep==3 && loginType){
+                        EasyLoading.showToast('Provider will end order. Not you.');
+                      }
+                    },
+                  ),
                 ),
               ],
             ),

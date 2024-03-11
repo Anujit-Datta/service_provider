@@ -36,8 +36,7 @@ class OrderController extends GetxController {
       requestedOrders.clear();
       value.docs.forEach((element) {
         history.insert(0, orderModel.fromMap(element.data()));
-        if (element.data()['status'] == 'Pending' ||
-            element.data()['status'] == 'Running') {
+        if (element.data()['status'] == 'Pending') {
           requestedOrders.add(history[0]);
         }
       });

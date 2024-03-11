@@ -14,7 +14,7 @@ import '../Controllers/OrderController.dart';
 import 'Contact.dart';
 import 'launcher.dart';
 
-List services = ['Electrician', 'Plumber', 'Cleaner', 'Painter', 'ISP'];
+List<String> services = ['Electrician', 'Plumber', 'Cleaner', 'Painter', 'ISP'];
 List servicesImage = [
   'assets/electrician.png',
   'assets/plumber.png',
@@ -28,7 +28,7 @@ List<Widget> pages=[
   userHomeBody(controller: Get.find<ProvidersController>()),
   HistoryBody(monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],),
 ];
-List pagesName=['Active Orders','Services','History'];
+List pagesName=['Active','Services','History'];
 
 
 class userHomePage extends StatefulWidget {
@@ -142,7 +142,7 @@ class SideNavigationDrawer extends StatefulWidget {
 class _SideNavigationDrawerState extends State<SideNavigationDrawer> {
   @override
   void initState() {
-    loginType==true?Get.find<UserController>().getCurrUserModel():Get.find<ProvidersController>().getCurrProviderModel();
+    loginType?Get.find<UserController>().getCurrUserModel():Get.find<ProvidersController>().getCurrProviderModel();
     super.initState();
   }
   @override

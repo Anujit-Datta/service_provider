@@ -3,6 +3,7 @@ const providerName = 'name';
 const providerEmail = 'email';
 const providerAddress = 'address';
 const providerImage = 'image';
+const providerService = 'service';
 const providerType = 'type';
 const providerSubTypes = 'subTypes';
 const providerScore='score';
@@ -15,6 +16,7 @@ class providerModel{
   String image;
   String name;
   String phone;
+  String service;
   String type;
   List subTypes;
   int score;
@@ -26,6 +28,7 @@ class providerModel{
     required this.email,
     required this.address,
     this.image = '',
+    required this.service,
     required this.type,
     required this.subTypes,
     this.score=0,
@@ -39,6 +42,7 @@ class providerModel{
       providerEmail : email,
       providerAddress : address,
       providerImage : image,
+      providerService : service,
       providerType : type,
       providerSubTypes: subTypes,
       providerScore: score,
@@ -53,8 +57,9 @@ class providerModel{
     email: map[providerEmail],
     address: map[providerAddress],
     image: map[providerImage],
+    service: map[providerService],
     type: map[providerType],
-    subTypes: map[providerSubTypes]??[],
+    subTypes: map[providerSubTypes] is Iterable ? List.from(map[providerSubTypes]) : [],
     score: map[providerScore]??0,
     deviceToken: map[providerDeviceToken]??'',
   );

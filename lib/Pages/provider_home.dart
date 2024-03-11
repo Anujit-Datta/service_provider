@@ -23,7 +23,7 @@ class ProviderHomePage extends StatefulWidget {
 
 class _ProviderHomePageState extends State<ProviderHomePage> {
   final _auth = FirebaseAuth.instance;
-  List pagesName = ['Active Orders', 'Jobs', 'History'];
+  List pagesName = ['Active Orders', 'Job Requests', 'History'];
   ProvidersController controller = Get.find<ProvidersController>();
 
   @override

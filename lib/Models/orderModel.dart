@@ -12,6 +12,7 @@ class orderModel{
   String orderType;
   String orderSubType;
   String otp;
+  int fee;
 
   orderModel({
     required this.userEmail,
@@ -26,6 +27,7 @@ class orderModel{
     required this.orderType,
     required this.orderSubType,
     this.otp='N/A',
+    this.fee=0,
   });
 
   Map<String, dynamic> toMap(){
@@ -39,6 +41,7 @@ class orderModel{
       'service' : orderType,
       'subType' : orderSubType,
       'otp' : otp,
+      'fee' : fee
     };
     return Map;
   }
@@ -56,6 +59,7 @@ class orderModel{
     orderType: map['service'],
     orderSubType: map['subType'],
     otp: map['otp']??'',
+    fee: map['fee'],
   );
 
 

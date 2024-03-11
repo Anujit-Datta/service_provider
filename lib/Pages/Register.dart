@@ -3,7 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:service_provider/Controllers/providersController.dart';
+import 'package:service_provider/Models/providerModel.dart';
+import 'package:service_provider/Pages/launcher.dart';
 import 'package:service_provider/Pages/login.dart';
+import 'package:service_provider/Pages/provider_home.dart';
 import 'package:service_provider/Pages/userHome.dart';
 import 'package:service_provider/Models/userModel.dart';
 import 'package:service_provider/Services/notification_services.dart';
@@ -31,9 +35,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final _addressController = TextEditingController();
   FocusNode five=FocusNode();
   final _passwordController = TextEditingController();
+  final _subTypeController = TextEditingController();
   bool error=false;
   String errorCode= '';
   bool providerCheckboxChecked=false;
+  String providerServiceSelection='Select one';
+  String providerTypeSelection='provider';
+  List<String> providerSubTypes=[];
   late String deviceToken;
 
   @override
@@ -165,38 +173,13 @@ class _RegisterPageState extends State<RegisterPage> {
           backgroundColor: Color(0xff4c505b),
           child: IconButton(
               color: Colors.white,
-              onPressed: () async{
-                if (_formKey.currentState!.validate()){
-                  EasyLoading.show(
-                    dismissOnTap: false,
-                    status: 'Signing Up',
-                  );
-                  final user= userModel(
-                      name: _nameController.text.trim(),
-                      email: _emailController.text.trim(),
-                      phone: _phoneController.text.trim(),
-                      address: _addressController.text.trim(),
-                      image: '',
-                      deviceToken: deviceToken,
-                  );
-                    await _auth
-                        .createUserWithEmailAndPassword(email: user.email, password: _passwordController.text).whenComplete(() async {
-                          Get.find<UserController>().currUserModel=user;
-                          Get.find<UserController>().currUserDoc=user.email;
-                          await _auth.signInWithEmailAndPassword(email: user.email, password: _passwordController.text);
-                    });
-                    await _db
-                        .collection('Users')
-                        .doc(user.email)
-                        .set(user.toMap()).onError((errorcode , stackTrace) {setState(() {error=false;errorCode=errorcode.toString();});})
-                        .whenComplete(()  {
-                          if(providerCheckboxChecked){
-
-                          }
-                          EasyLoading.dismiss(animation: true);
-                          Get.to(() =>userHomePage());
-                    });
-                  EasyLoading.dismiss(animation: true);
+              onPressed: (){
+                if(providerCheckboxChecked){
+                  if(_formKey.currentState!.validate()){
+                    providerServiceSelectingDialog();
+                  }
+                }else{
+                  registerButtonAction();
                 }
               },
               icon: Icon(
@@ -206,6 +189,208 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
     );
   }
+
+  void registerButtonAction() async{
+    if (_formKey.currentState!.validate()){
+      EasyLoading.show(
+        dismissOnTap: false,
+        status: 'Signing Up',
+      );
+      final user= userModel(
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          phone: _phoneController.text.trim(),
+          address: _addressController.text.trim(),
+          image: '',
+          deviceToken: deviceToken,
+      );
+        await _auth
+            .createUserWithEmailAndPassword(email: user.email, password: _passwordController.text).whenComplete(() async {
+              Get.find<UserController>().currUserModel=user;
+              Get.find<UserController>().currUserDoc=user.email;
+              await _auth.signInWithEmailAndPassword(email: user.email, password: _passwordController.text).whenComplete(() {loginType=true;});
+        });
+        await _db
+            .collection('Users')
+            .doc(user.email)
+            .set(user.toMap()).onError((errorcode , stackTrace) {setState(() {error=true;errorCode=errorcode.toString();});})
+            .whenComplete(()  {
+              EasyLoading.dismiss(animation: true);
+              Get.offAll(() =>userHomePage());
+        });
+      EasyLoading.dismiss(animation: true);
+    }
+  }
+  void registerButtonActionProvider() async{
+      EasyLoading.show(
+        dismissOnTap: false,
+        status: 'Signing Up',
+      );
+      final provider= providerModel(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
+        address: _addressController.text.trim(),
+        image: '',
+        deviceToken: deviceToken,
+        service: providerServiceSelection,
+        type: providerTypeSelection,
+        subTypes: providerSubTypes,
+      );
+      await _auth
+          .createUserWithEmailAndPassword(email: provider.email, password: _passwordController.text).whenComplete(() async {
+        Get.find<ProvidersController>().currProviderModel=provider;
+        Get.find<ProvidersController>().currProviderDoc=provider.email;
+        Get.find<ProvidersController>().currProviderType=provider.service;
+        await _auth.signInWithEmailAndPassword(email: provider.email, password: _passwordController.text).whenComplete(() {loginType = false;});
+      });
+      await _db
+          .collection(provider.service)
+          .doc(provider.email)
+          .set(provider.toMap()).onError((errorcode , stackTrace) {setState(() {error=true;errorCode=errorcode.toString();});})
+          .whenComplete(()  async{
+        if(providerCheckboxChecked){
+          await _db.collection('providers').doc(provider.email).set({'type':provider.service});
+        }
+        EasyLoading.dismiss(animation: true);
+        Get.offAll(() =>ProviderHomePage());
+      });
+      EasyLoading.dismiss(animation: true);
+  }
+
+  Future<void> providerServiceSelectingDialog() async{
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Provider Confirmation'),
+            content: Text('If you want to register your account as a provider than some extra information about your service type will be need. Do you confirm that?'),
+            actions: <Widget>[
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  EasyLoading.showToast('Uncheck the "Register as Service Provider" checkbox to register as normal user',toastPosition: EasyLoadingToastPosition.bottom,duration: Duration(seconds: 4));
+                },
+                color: Colors.red[100],
+                child: const Text('Cancel'),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  providerSubTypes=[];
+                  showServiceSelectionSheet();
+                },
+                color: Colors.green[100],
+                child: const Text('Confirm'),
+              ),
+            ],
+          );
+        });
+  }
+
+  showServiceSelectionSheet(){
+    showModalBottomSheet(context: context,enableDrag: false,isDismissible: false,isScrollControlled: true,backgroundColor: Colors.lightBlueAccent, builder: (BuildContext context){
+      return StatefulBuilder(
+        builder: (context,setState) {
+          return SizedBox(
+            width: MediaQuery.sizeOf(context).width,
+            child: Column(
+              children: [
+                SizedBox(height: 20,),
+                Text(
+                  'Provider Information',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 30,),
+                DropdownMenu(
+                  onSelected: (selectedValue){
+                    setState(() {
+                      providerServiceSelection=selectedValue!;
+                    });
+                  },
+                  width: MediaQuery.sizeOf(context).width*0.7,
+                  hintText: 'Select Service Account Type',
+                  dropdownMenuEntries: <DropdownMenuEntry<String>>[
+                    DropdownMenuEntry(value: services[0], label: services[0]),
+                    DropdownMenuEntry(value: services[1], label: services[1]),
+                    DropdownMenuEntry(value: services[2], label: services[2]),
+                    DropdownMenuEntry(value: services[3], label: services[3]),
+                    DropdownMenuEntry(value: services[4], label: services[4]),
+                  ],
+                ),
+                SizedBox(height: 30,),
+                DropdownMenu(
+                  onSelected: (String? selectedValue){
+                    setState(() {
+                      providerTypeSelection=selectedValue!;
+                    });
+                  },
+                  width: MediaQuery.sizeOf(context).width*0.7,
+                  hintText: 'Select subtype in service',
+                  helperText: 'Only between service type',
+                  dropdownMenuEntries: <DropdownMenuEntry<String>>[
+                    DropdownMenuEntry(value: 'Home appliance', label: 'Electrician: Home appliance'),
+                    DropdownMenuEntry(value: 'Gadgets', label: 'Electrician: Gadgets'),
+                    DropdownMenuEntry(value: 'Home wiring', label: 'Electrician: Home wiring'),
+                    DropdownMenuEntry(value: 'Gas line', label: 'Plumber:Gas line'),
+                    DropdownMenuEntry(value: 'Water line', label: 'Plumber: Water line'),
+                    DropdownMenuEntry(value: 'Interior Cleaner', label: 'Cleaner: Interior'),
+                    DropdownMenuEntry(value: 'Exterior Cleaner', label: 'Cleaner: Exterior'),
+                    DropdownMenuEntry(value: 'Wall painter', label: 'Painter: Home'),
+                    DropdownMenuEntry(value: 'Furniture painter', label: 'Painter: Furniture'),
+                    DropdownMenuEntry(value: 'Nationwide ISP', label: 'ISP: Nationwide'),
+                    DropdownMenuEntry(value: 'Local ISP', label: 'ISP:  Local'),
+                  ],
+                ),
+                SizedBox(height: 30,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 30,),
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width*0.6,
+                      child: TextField(
+                        controller: _subTypeController,
+                        decoration: InputDecoration(
+                          labelText: 'Expertise',
+                          hintText: 'Add your expertise'
+                        ),
+                      ),
+                    ),
+                    MaterialButton(
+                      onPressed: (){
+                        if(!providerSubTypes.contains(_subTypeController.text) && _subTypeController.text!=''){
+                          providerSubTypes.add(_subTypeController.text);
+                          setState(() {});
+                        }
+                        _subTypeController.clear();
+                      },
+                      color: Colors.lightGreen[100],
+                      child: Text('Add more'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15,),
+                Text('Added: ${providerSubTypes.toString()}'),
+                SizedBox(height: 30,),
+                MaterialButton(
+                  onPressed: (){
+                    registerButtonActionProvider();
+                  },
+                  color: Colors.lightGreen[200],
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
+          );
+        }
+      );
+    });
+  }
+
 
   TextFormField passwordField() {
     return TextFormField(
@@ -322,5 +507,15 @@ class _RegisterPageState extends State<RegisterPage> {
         style: TextStyle(color: Colors.white, fontSize: 50),
       ),
     );
+  }
+  @override
+  void dispose() {
+    _subTypeController.dispose();
+    _addressController.dispose();
+    _emailController.dispose();
+    _nameController.dispose();
+    _passwordController.dispose();
+    _phoneController.dispose();
+    super.dispose();
   }
 }

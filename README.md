@@ -24,7 +24,7 @@
 
 <h3 align="left">UI Overview:</h3>
 
-<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_164247.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_164322.png">
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/home.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/Screenshot_20240905_034007.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/signup.png">
 
 
 <img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">

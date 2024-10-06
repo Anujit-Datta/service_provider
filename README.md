@@ -1,5 +1,5 @@
 <div align="center">
-    <img alt="UI" src="[https://github.com/Anujit-Datta/ecommerce/blob/master/assets/images/logo.svg](https://github.com/Anujit-Datta/Anujit-Datta/blob/main/appLogo.png)">
+    <img alt="UI" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/appLogo.png">
 </div>
 <h3 align="center">A Local Service provideing app made with Flutter for finding Electricians, Plumbers, Cleaners etc.</h3><br>
 

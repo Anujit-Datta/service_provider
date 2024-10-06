@@ -7,8 +7,15 @@
 <h3 align="left">Used Techs:</h3>
 
 - Flutter
+      GetX
+      OpenMaps
+      GoogleMaps Navigation
 - Firebase
-
+      Authentication
+      Firestore
+      Storage
+      Cloud Messaging
+      
 
 <h3 align="left">Features:</h3>
 
@@ -36,7 +43,7 @@
 
 <img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/profile.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/editProfile.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/support.png">
 
-<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/about.png">    <img align="center" alt="Coding" width="324" src="">        <img align="right" alt="Coding" width="324" src="">
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/about.png">  
 
 
 

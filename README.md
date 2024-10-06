@@ -1,16 +1,35 @@
-# service_provider
+<div align="center">
+    <img alt="UI" src="[https://github.com/Anujit-Datta/ecommerce/blob/master/assets/images/logo.svg](https://github.com/Anujit-Datta/Anujit-Datta/blob/main/appLogo.png)">
+</div>
+<h3 align="center">A Local Service provideing app made with Flutter for finding Electricians, Plumbers, Cleaners etc.</h3><br>
 
-A local services finding app Flutter project.
 
-## Getting Started
+<h3 align="left">Used Techs:</h3>
 
-This project is a starting point for a Flutter application.
+- Flutter
+- Firebase
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<h3 align="left">Features:</h3>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- User Authentication
+- Service Categoring
+- Service Finding
+- Booking providers
+- Tarcking progress
+- OTP based provider-user confirmation 
+- History
+- Contact Us
+
+
+<h3 align="left">UI Overview:</h3>
+
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_164247.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_164322.png">
+
+
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">
+
+
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">
+
+

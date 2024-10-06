@@ -27,9 +27,16 @@
 <img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/home.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/Screenshot_20240905_034007.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/signup.png">
 
 
-<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/sidenav.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/electricians.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/booking.png">
 
 
-<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/ecommerce/blob/master/assets/gtihubScreenshots/Screenshot_20240904_165618.png">
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/proHome.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/history.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/activeOrders.png">
+
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/map.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/orderTrack.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/orderTrackPageUser.png">
+
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/profile.png">    <img align="center" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/editProfile.png">        <img align="right" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/support.png">
+
+<img align="left" alt="Coding" width="324" src="https://github.com/Anujit-Datta/service_provider/blob/main/assets/ss/about.png">    <img align="center" alt="Coding" width="324" src="">        <img align="right" alt="Coding" width="324" src="">
+
 
 
